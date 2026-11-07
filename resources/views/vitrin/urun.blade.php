@@ -232,8 +232,6 @@
                         Türkiye geneli kargo
                     @endif
                 </li>
-                <li>@include('vitrin.parca.ikon', ['ad' => 'iade']) Teslimden sonra {{ config('shop.cayma_hakki_gun') }} gün iade hakkı</li>
-                <li>@include('vitrin.parca.ikon', ['ad' => 'kalkan']) PayTR ile güvenli ödeme</li>
             </ul>
         </div>
     </div>
