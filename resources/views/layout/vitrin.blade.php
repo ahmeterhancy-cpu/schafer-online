@@ -176,7 +176,7 @@
         @yield('icerik')
     </main>
 
-    {{-- Güven şeridi — referanstaki dört özellik --}}
+    {{-- Güven şeridi — üç özellik --}}
     <section class="guven-serit" aria-label="Alışveriş güvenceleri">
         <div class="kap guven-serit-ic">
             <div>
@@ -186,10 +186,6 @@
             <div>
                 @include('vitrin.parca.ikon', ['ad' => 'kalkan'])
                 <span><strong>Güvenli Alışveriş</strong>256 bit SSL ile korunan ödeme</span>
-            </div>
-            <div>
-                @include('vitrin.parca.ikon', ['ad' => 'iade'])
-                <span><strong>İade &amp; Değişim</strong>{{ config('shop.cayma_hakki_gun') }} gün içinde kolay iade</span>
             </div>
             <div>
                 @include('vitrin.parca.ikon', ['ad' => 'kart'])
