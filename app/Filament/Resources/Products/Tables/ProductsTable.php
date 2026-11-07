@@ -303,6 +303,21 @@ class ProductsTable
                         ))
                         ->deselectRecordsAfterCompletion(),
 
+                    BulkAction::make('normalFiyatKatla')
+                        ->label('Normal fiyatı satış fiyatının katı yap')
+                        ->icon('heroicon-o-tag')
+                        ->authorize(fn () => Yetki::yonetici())
+                        ->modalDescription('Satış fiyatı DEĞİŞMEZ. Üstü çizili normal fiyat, satış fiyatı × çarpan olur (2 → vitrinde %50 indirim). Fiyatı 0 olanlar atlanır.')
+                        ->schema([
+                            TextInput::make('carpan')->label('Çarpan')->numeric()->minValue(1.01)->maxValue(10)->default(2)->required(),
+                            Select::make('yuvarlama')->label('Yuvarlama')->options(TopluUrunIslemleri::YUVARLAMA)->default('yok')->required(),
+                        ])
+                        ->action(fn (Collection $records, array $data) => static::calistir(
+                            fn () => app(TopluUrunIslemleri::class)->normalFiyatiKatla($records, (float) $data['carpan'], $data['yuvarlama']),
+                            ':n varyantın normal fiyatı güncellendi'
+                        ))
+                        ->deselectRecordsAfterCompletion(),
+
                     BulkAction::make('indirimKaldir')
                         ->label('İndirimi kaldır')
                         ->icon('heroicon-o-x-mark')

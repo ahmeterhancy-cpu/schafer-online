@@ -79,6 +79,22 @@ class TopluUrunIslemleri
         });
     }
 
+    /**
+     * Satış fiyatı AYNI kalır; üstü çizili "normal fiyat" satış fiyatının
+     * katı olur (ör. 2 → normal fiyat iki katı, vitrinde %50 indirim).
+     * Fiyatı 0 olan varyant atlanır.
+     */
+    public function normalFiyatiKatla(Collection $urunler, float $carpan, string $yuvarlama = 'yok'): int
+    {
+        if ($carpan <= 1) {
+            throw new InvalidArgumentException('Çarpan 1\'den büyük olmalı.');
+        }
+
+        return $this->varyantlaraUygula($urunler, fn (ProductVariant $v) => (float) $v->price > 0
+            ? ['compare_at_price' => $this->yuvarla((float) $v->price * $carpan, $yuvarlama)]
+            : null);
+    }
+
     /** İndirimi kaldırır: fiyat eski fiyata döner. */
     public function indirimKaldir(Collection $urunler): int
     {

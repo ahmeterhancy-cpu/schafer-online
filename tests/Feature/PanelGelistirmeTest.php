@@ -108,6 +108,22 @@ class PanelGelistirmeTest extends TestCase
         $this->assertNull($v->compare_at_price);
     }
 
+    public function test_normal_fiyat_satis_fiyatinin_iki_kati_olur(): void
+    {
+        $a = $this->urun('A', 1450);
+        $b = $this->urun('B', 800, eski: 1000);   // zaten indirimli: eski fiyat değişir
+        $c = $this->urun('C', 0);                 // fiyatsız: atlanır
+
+        $n = app(TopluUrunIslemleri::class)->normalFiyatiKatla(collect([$a, $b, $c]), 2);
+
+        $this->assertSame(2, $n);
+        $this->assertSame('1450.00', $a->variants()->value('price'), 'Satış fiyatı değişmemeli');
+        $this->assertSame('2900.00', $a->variants()->value('compare_at_price'));
+        $this->assertSame('1600.00', $b->variants()->value('compare_at_price'));
+        $this->assertNull($c->variants()->value('compare_at_price'));
+        $this->assertSame(50, Product::kartIcin()->find($a->id)->indirim_orani);
+    }
+
     public function test_stok_ayarlama_rezervin_altina_inmez(): void
     {
         $a = $this->urun('A', 100, stok: 3);
