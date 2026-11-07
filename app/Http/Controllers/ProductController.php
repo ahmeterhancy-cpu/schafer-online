@@ -1,0 +1,130 @@
+<?php
+
+namespace App\Http\Controllers;
+
+use App\Models\Product;
+
+class ProductController extends Controller
+{
+    public function show(string $slug)
+    {
+        $urun = Product::query()
+            ->where('slug', $slug)
+            ->where('is_active', true)
+            ->with([
+                // Yalnız satıştaki bir varyantı olan değerler seçilebilir görünür
+                'options.values' => fn ($v) => $v->whereHas('variants', fn ($q) => $q->where('is_active', true)),
+                'variants.optionValues',
+                'media',
+                'categories.sizeChart',
+                'sizeChart',
+                'collection',
+                'related' => fn ($q) => $q->where('is_active', true)->kartIcin(),
+            ])
+            ->firstOrFail();
+
+        /*
+         * "Benzer ürünler": aynı koleksiyondan, yoksa aynı kategorilerden.
+         * Elle seçilmiş kombin önerileri (related) tekrar edilmez.
+         */
+        $haric = $urun->related->pluck('id')->push($urun->id);
+        $benzerler = Product::query()
+            ->where('is_active', true)
+            ->whereNotIn('id', $haric)
+            ->where(function ($q) use ($urun) {
+                if ($urun->collection_id) {
+                    $q->where('collection_id', $urun->collection_id);
+                }
+                if ($urun->categories->isNotEmpty()) {
+                    $q->orWhereHas('categories', fn ($c) => $c->whereIn('categories.id', $urun->categories->pluck('id')));
+                }
+                if (! $urun->collection_id && $urun->categories->isEmpty()) {
+                    $q->whereRaw('1 = 0');
+                }
+            })
+            ->kartIcin()
+            ->orderBy('position')
+            ->limit(8)
+            ->get();
+
+        /*
+         * Varyant tablosu tarayıcıya veri olarak gider; beden/renk seçimi
+         * sunucuya gidip gelmeden çözülsün diye. Fiyat burada GÖSTERİM
+         * amaçlıdır — sepete eklerken fiyat yeniden sunucuda okunur,
+         * istemciden gelen tutara asla güvenilmez.
+         */
+        $varyantlar = $urun->variants
+            ->where('is_active', true)
+            ->map(fn ($v) => [
+                'id' => $v->id,
+                'degerler' => $v->optionValues->pluck('id')->values()->all(),
+                'stok' => $v->available_stock,
+                'fiyat' => (float) $v->price,
+                'sku' => $v->sku,
+                // Varyanta özel görsel: seçilince ana görsel olur (bkz. urun.js)
+                'gorsel' => $v->image,
+            ])->values();
+
+        // Renk seçilince değişecek galeri: değer kimliği => görsel yolları
+        $renkGalerisi = $urun->media
+            ->whereNotNull('product_option_value_id')
+            ->groupBy('product_option_value_id')
+            ->map(fn ($grup) => $grup->pluck('path')->values()->all());
+
+        /*
+         * Açılışta gösterilecek görseller: kapak + genel galeri.
+         *
+         * Önceden yalnızca genel galeri kullanılıyordu; kapak görseli ürün
+         * sayfasında HİÇ görünmüyordu. Üstelik renk değişiminde görseli
+         * değiştiren <img> ancak genel görsel varsa çiziliyordu — kapak +
+         * renk fotoğrafı olan bir ürün "Z" yer tutucusuyla açılıyor, renk
+         * seçince de hiçbir şey olmuyordu.
+         *
+         * Hiç genel görsel yoksa ilk renk fotoğrafı açılış görseli olur.
+         */
+        $genelYollar = collect([$urun->hero_image])
+            ->merge($urun->media->whereNull('product_option_value_id')->pluck('path'))
+            ->filter()
+            ->unique()
+            ->values();
+
+        if ($genelYollar->isEmpty()) {
+            $genelYollar = $urun->media->pluck('path')->take(1)->values();
+        }
+
+        // Hâlâ görsel yoksa ama varyant görseli varsa açılışta onu göster
+        if ($genelYollar->isEmpty()) {
+            $genelYollar = $urun->variants->where('is_active', true)->pluck('image')->filter()->take(1)->values();
+        }
+
+        /*
+         * AÇILIŞTA BÜTÜN FOTOĞRAFLAR görünür: kapak + genel galeri + her
+         * rengin fotoğrafları. Mağaza galeriyi renk başına yüklediği için
+         * sayfa önce tek kapak görseliyle açılıyor, küçük resim şeridi hiç
+         * çizilmiyor ve o fotoğraflara JS'siz ulaşılamıyordu.
+         *
+         * Renk seçilince şeridi urun.js o rengin fotoğraflarıyla yeniden
+         * kurar; seçim kalkınca buradaki tam listeye döner.
+         */
+        $genelYollar = $genelYollar
+            ->merge($urun->media->pluck('path'))
+            ->filter()
+            ->unique()
+            ->values();
+
+        // Yalnız onaylı yorumlar; en yeni 20'si (ürün sayfası sonsuz uzamasın)
+        $yorumlar = $urun->review_count > 0
+            ? $urun->reviews()->yayinda()->latest('approved_at')->limit(20)->get()
+            : collect();
+
+        return view('vitrin.urun', [
+            'urun' => $urun,
+            'yorumlar' => $yorumlar,
+            'benzerler' => $benzerler,
+            'varyantlar' => $varyantlar,
+            'renkGalerisi' => $renkGalerisi,
+            'bedenTablosu' => $urun->resolvedSizeChart(),
+            'genelYollar' => $genelYollar,
+        ]);
+    }
+}

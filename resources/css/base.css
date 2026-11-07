@@ -1,0 +1,166 @@
+/*
+ * Schafer Kıbrıs — temel jetonlar
+ *
+ * DÜZEN: schaferkibris.com (WooCommerce + Basel teması) referans alındı —
+ * siyah üst şerit, bej başlık + ortada kırmızı logo, başlığın altında
+ * büyük harfli menü, beyaz ürün ızgarası, kırmızı alt bilgi.
+ *
+ * RENK — ölçülen değerler ve kontrast (beyaz zemine / beyaz yazıya karşı):
+ *   #EB1C22  4.47:1  logo kırmızısı — beyaz küçük yazı için SINIRIN ALTINDA
+ *   #D21C22  5.20:1  --vurgu: düğme, rozet, alt bilgi zemini (üstünde beyaz)
+ *   #C09E80  2.49:1  --bej: başlık zemini. Üstünde BEYAZ YAZI OLMAZ;
+ *                    referans beyaz kullanıyordu, burada koyu mürekkep (7:1).
+ */
+
+:root {
+    --paper: #ffffff;
+    --paper-alt: #f7f5f2;
+    --paper-sunken: #f1ece6;
+
+    --ink: #1b1919;
+    --ink-soft: #4c4c4c;
+    --ink-faint: #737373;
+
+    --line: #e6e6e6;
+    --line-strong: #d4d4d4;
+
+    /* Marka */
+    --kirmizi: #eb1c22;      /* logo — dekor, büyük yazı */
+    --vurgu: #d21c22;
+    --vurgu-koyu: #a8161b;
+    --vurgu-acik: #fdecec;
+
+    --bej: #c09e80;          /* başlık zemini */
+    --bej-koyu: #a9876a;
+    --bej-acik: #f4ede6;
+    --bej-murekkep: #2a2018; /* bej üstündeki yazı */
+
+    /* Eski adlar — bileşenler bunlara bağlı */
+    --gold: #c09e80;
+    --gold-deep: #a9876a;
+    --gold-ink: #7a5a3e;
+    --gold-pale: #e9dccf;
+    --gold-wash: #f8f3ee;
+
+    --rozet-indirim: #d21c22;
+    --rozet-yeni: #1b1919;
+
+    --ok: #2f6f4a;
+    --warn: #9a6b12;
+    --danger: #a32b2b;
+
+    --gutter: 20px;
+    --kap: 1240px;
+    --radius: 4px;
+    --radius-kucuk: 3px;
+    --radius-hap: 999px;
+    --measure: 68ch;
+    --golge: 0 4px 18px rgba(0, 0, 0, 0.08);
+
+    --font: 'Lato', system-ui, -apple-system, 'Segoe UI', Arial, sans-serif;
+    --font-baslik: 'Poppins', system-ui, -apple-system, 'Segoe UI', Arial, sans-serif;
+    --font-vurgu: 'Poppins', system-ui, sans-serif;
+
+    --tracking-wide: 0.06em;
+    --tracking-wider: 0.1em;
+}
+
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+}
+
+html {
+    /*
+     * overflow-x: clip — hidden DEĞİL.
+     * hidden, html/body'yi kaydırma kabı yapıp tüm position:sticky'yi
+     * sessizce bozar.
+     */
+    overflow-x: clip;
+    scroll-behavior: smooth;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    html { scroll-behavior: auto; }
+}
+
+body {
+    margin: 0;
+    background: var(--paper);
+    color: var(--ink-soft);
+    font-family: var(--font);
+    font-size: 14px;
+    font-weight: 400;
+    line-height: 1.7;
+    -webkit-font-smoothing: antialiased;
+}
+
+h1, h2, h3, h4 {
+    font-family: var(--font-baslik);
+    color: var(--ink);
+    font-weight: 600;
+    line-height: 1.3;
+    margin: 0;
+}
+
+img,
+picture,
+video {
+    display: block;
+    max-width: 100%;
+    height: auto;
+}
+
+a {
+    color: inherit;
+}
+
+button,
+input,
+select,
+textarea {
+    font: inherit;
+    color: inherit;
+}
+
+:focus-visible {
+    outline: 2px solid var(--vurgu);
+    outline-offset: 2px;
+}
+
+/* Ekran okuyucuya açık, gözden gizli */
+.gorunmez {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+}
+
+/* Çizgi ikonlar (resources/views/vitrin/parca/ikon.blade.php) */
+.ikon {
+    display: inline-block;
+    width: 22px;
+    height: 22px;
+    flex: none;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 1.5;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    vertical-align: middle;
+}
+
+/*
+ * IZGARA KURALI: fr kolonlari daima minmax(0, Nfr).
+ *
+ * Duz "1fr" aslinda minmax(auto, 1fr): kolon, icindeki ogenin en kucuk
+ * icerik genisliginin altina inemez. Mobilde sepet ozeti ve satirlari
+ * bu yuzden ekrandan 9px tasiyordu. Ustelik html { overflow-x: clip }
+ * tasan kismi sessizce kirptigi icin kaydirma cubugu da cikmiyor —
+ * scrollWidth olcumu tasmayi GORMUYOR, icerik kenarda kesik kaliyor.
+ */

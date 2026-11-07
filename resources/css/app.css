@@ -1,0 +1,8 @@
+/* Schafer Kıbrıs — vitrin stil girisi. Sifir kutuphane, elle yazilmis duz CSS. */
+@import './base.css';
+@import './layout.css';
+@import './components.css';
+@import './sections.css';
+@import './pages.css';
+@import './motion.css';
+@import './koseler.css';

@@ -1,0 +1,91 @@
+<?php
+
+/*
+ * Magaza ayarlari.
+ *
+ * TUZAK: config onbellegi (`artisan optimize`) sonrasi Laravel .env dosyasini
+ * HIC yuklemez. config/ disindaki her env() cagrisi null doner. Bu yuzden
+ * .env'den okunan her deger BU dosyadan gecmek zorunda; uygulama kodu
+ * daima config('shop.*') kullanir, asla env().
+ */
+
+return [
+
+    // Kimlik
+    'ad' => env('SHOP_AD', 'Schafer Kıbrıs'),
+
+    /*
+     * Demo icerigin canliya yuklenmesine acik izin. DemoSeeder canlida
+     * kendini kilitler; vitrini gercek urunler gelmeden doldurmak icin
+     * .env'ye DEMO_SEED_IZIN=true yazilir ve is bitince KALDIRILIR.
+     * Deger config'ten okunur: onbellege alinmis ayarda env() null doner.
+     */
+    'demo_seed_izin' => (bool) env('DEMO_SEED_IZIN', false),
+    'alan_adi' => env('SHOP_ALAN_ADI', 'schaferkibris.com'),
+
+    // Para birimi — satis bolgesi KKTC, fiyatlar TL
+    'para_birimi' => 'TRY',
+    'para_simgesi' => '₺',
+
+    /*
+     * Kargo: tek ucret + ucretsiz esigi.
+     *
+     * Para her yerde TL cinsinden decimal(10,2) tutulur — varyant fiyati,
+     * siparis toplami ve burasi ayni birimde olmak ZORUNDA. Kurus/TL
+     * karisimi sessiz 100 kat hatalara yol acar.
+     */
+    'kargo' => [
+        'ucret' => (float) env('SHOP_KARGO_UCRET', 150.00),
+        'ucretsiz_esigi' => (float) env('SHOP_KARGO_UCRETSIZ_ESIGI', 2500.00),
+        'firma' => env('SHOP_KARGO_FIRMA', ''),
+    ],
+
+    // Yeni siparis bildiriminin gidecegi magaza adresi (bos ise gonderilmez)
+    'siparis_bildirim_epostasi' => env('SHOP_SIPARIS_BILDIRIM', ''),
+
+    // Stok
+    'dusuk_stok_esigi' => (int) env('SHOP_DUSUK_STOK_ESIGI', 3),
+
+    // 6502 sayili kanun / Mesafeli Sozlesmeler Yonetmeligi
+    'cayma_hakki_gun' => 14,
+
+    /*
+     * Iletisim kanallari. WhatsApp numarasi yerel bicimde yazilabilir
+     * (05551800206); App\Support\Iletisim uluslararasi bicime cevirir.
+     * Harita gommesi bos birakilirsa adresten uretilir.
+     */
+    'iletisim' => [
+        'whatsapp' => env('SHOP_WHATSAPP', '+905488477000'),
+        'whatsapp_mesaj' => env('SHOP_WHATSAPP_MESAJ', 'Merhaba, Schafer Kıbrıs ürünleri hakkında bilgi almak istiyorum.'),
+        /*
+         * Harita: once harita_embed (tam gomme adresi), sonra harita_sorgu.
+         * TUZAK: ham adres ("... Edirne Life 5 — Edirne/Merkez") Google'da
+         * cozulemeyip DUNYA haritasi aciyordu; magaza adiyla sorgu dogru
+         * igneyi getiriyor.
+         */
+        'harita_embed' => env('SHOP_HARITA_EMBED', ''),
+        'harita_sorgu' => env('SHOP_HARITA_SORGU', 'Schafer Gönyeli Lefkoşa'),
+        'calisma_saatleri' => env('SHOP_CALISMA_SAATLERI', 'Pazartesi - Cumartesi 10.00 - 20.00'),
+    ],
+
+    // Sosyal
+    'sosyal' => [
+        'instagram' => env('SHOP_INSTAGRAM', ''),
+    ],
+
+    // Satici bilgileri — yasal metinlerde ve faturada gorunur
+    'satici' => [
+        'unvan' => env('SHOP_SATICI_UNVAN', ''),
+        'adres' => env('SHOP_SATICI_ADRES', 'Düzyol Sokak No:10/B Gönyeli, Lefkoşa — KKTC (Garanti Bankası yanı)'),
+        'telefon' => env('SHOP_SATICI_TELEFON', '+90 392 223 55 56'),
+        'telefon2' => env('SHOP_SATICI_TELEFON2', '+90 548 847 70 00'),
+        'eposta' => env('SHOP_SATICI_EPOSTA', 'info@schaferkibris.com'),
+        'mersis' => env('SHOP_SATICI_MERSIS', ''),
+        'vergi_dairesi' => env('SHOP_SATICI_VERGI_DAIRESI', ''),
+        'vergi_no' => env('SHOP_SATICI_VERGI_NO', ''),
+    ],
+
+    // Bakim perdesi
+    'bakim_modu' => (bool) env('SHOP_BAKIM_MODU', false),
+
+];
