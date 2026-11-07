@@ -55,11 +55,17 @@ class BannerTest extends TestCase
 
     public function test_panel_slayti_marka_kahraman_alaninin_yerini_alir(): void
     {
-        $this->get('/')->assertSee('Schafer kalitesi', false);
+        $kat = \App\Models\Category::create(['name' => 'Pişirme', 'is_featured' => true]);
+        $urun = \App\Models\Product::create(['name' => 'Döküm Tencere', 'is_active' => true, 'hero_image' => 'urunler/yok.webp']);
+        $urun->variants()->create(['sku' => 'DT-1', 'price' => 1000, 'stock' => 3]);
+        $urun->categories()->attach($kat);
+        app(\App\Services\VariantMatrix::class)->refreshProduct($urun->fresh());
+
+        $this->get('/')->assertSee('data-hero', false);
 
         Banner::create(['yer' => 'slayt', 'baslik' => 'Kampanya']);
 
-        $this->get('/')->assertSee('Kampanya')->assertDontSee('Schafer kalitesi', false);
+        $this->get('/')->assertSee('Kampanya')->assertDontSee('data-hero', false);
     }
 
     public function test_takvim_ve_aktiflik_uygulanir(): void
@@ -80,7 +86,6 @@ class BannerTest extends TestCase
     {
         $this->get('/')
             ->assertOk()
-            ->assertSee('Schafer kalitesi', false)    // marka kahraman alanı
             ->assertDontSee('class="afisler', false); // afiş yalnız panelden
     }
 

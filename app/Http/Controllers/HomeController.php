@@ -62,14 +62,33 @@ class HomeController extends Controller
             ->limit(8)
             ->get();
 
-        // Slayt yoksa kahraman alanında öne çıkan ürün görselleri kullanılır
-        $vitrinUrunleri = Product::query()
+        /*
+         * Panelden slayt girilmemişse ürün slaytları: ana sayfada gösterilen
+         * her kategoriden bir "vitrin ürünü" (öne çıkan önce, sonra en yüksek
+         * fiyatlı — setler ve büyük ürünler vitrinde daha iyi durur).
+         */
+        $vitrinSlaytlari = Category::query()
             ->where('is_active', true)
-            ->whereNotNull('hero_image')
-            ->orderByDesc('is_featured')
-            ->orderByDesc('created_at')
-            ->limit(3)
-            ->get(['id', 'name', 'slug', 'hero_image']);
+            ->where('is_featured', true)
+            ->orderBy('position')
+            ->get()
+            ->map(function (Category $kat) {
+                $urun = Product::query()
+                    ->where('is_active', true)
+                    ->where('total_stock', '>', 0)
+                    ->whereNotNull('hero_image')
+                    ->whereHas('categories', fn ($q) => $q->whereIn('categories.id', $kat->altAgacIdleri()))
+                    ->kartIcin()
+                    ->orderByDesc('is_featured')
+                    ->orderByDesc('min_price')
+                    ->first();
+
+                return $urun ? ['kategori' => $kat, 'urun' => $urun] : null;
+            })
+            ->filter()
+            ->unique(fn ($s) => $s['urun']->id)
+            ->take(5)
+            ->values();
 
         $banner = fn (string $yer) => rescue(fn () => Banner::yayinda($yer)->get(), collect(), false);
 
@@ -80,7 +99,7 @@ class HomeController extends Controller
             'trend' => $trend,
             'bolumler' => $bolumler,
             'kampanyalar' => $kampanyalar,
-            'vitrinUrunleri' => $vitrinUrunleri,
+            'vitrinSlaytlari' => $vitrinSlaytlari,
         ]);
     }
 }

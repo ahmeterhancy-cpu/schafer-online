@@ -27,8 +27,20 @@ class AnasayfaTest extends TestCase
     {
         $this->get('/')
             ->assertOk()
-            ->assertSee('Schafer Kıbrıs', false)
-            ->assertSee('#SCHAFER', false);
+            ->assertSee('Schafer Kıbrıs', false);
+    }
+
+    public function test_urun_slayti_ana_sayfa_kategorilerinden_olusur(): void
+    {
+        $kat = Category::create(['name' => 'Pişirme', 'is_featured' => true]);
+        $urun = $this->tekTipUrun('SCHAFER MATRIX DÖKÜM TENCERE SETİ', 13900, [$kat->id]);
+        $urun->update(['hero_image' => 'urunler/yok.webp']);
+        $urun->variants()->update(['compare_at_price' => 27800]);
+
+        $html = $this->get('/')->getContent();
+        $this->assertStringContainsString('hero-slayt', $html);
+        $this->assertStringContainsString('-%50', $html);
+        $this->assertStringContainsString('Tüm Pişirme', $html);
     }
 
     public function test_urun_yokken_de_acilir(): void

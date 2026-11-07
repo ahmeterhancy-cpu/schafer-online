@@ -1,0 +1,280 @@
+/*
+ * Ana sayfa ürün slaytı (hero).
+ *
+ * Slaytlar üst üste durur, etkin olan görünür (opacity + hafif kayma).
+ * Ürün fotoğrafları beyaz zeminli: mix-blend-mode: multiply beyazı
+ * zeminin tonuna karıştırır. JS yoksa yalnız ilk slayt görünür.
+ */
+
+.hero {
+    --hero-sure: 6s;
+    position: relative;
+    overflow: clip;
+    background: var(--bej-acik);
+}
+
+.hero-sahne {
+    position: relative;
+    display: grid;
+}
+
+.hero-slayt {
+    grid-area: 1 / 1;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.7s ease, visibility 0s linear 0.7s;
+}
+
+.hero-slayt.aktif {
+    opacity: 1;
+    visibility: visible;
+    transition: opacity 0.7s ease;
+}
+
+/* Zemin tonları — her slayt kendi rengi, sıcak ve sakin */
+.hero-ton-1 { background: radial-gradient(120% 140% at 85% 40%, #f6ece2 0%, #efe3d6 45%, #e8d8c8 100%); }
+.hero-ton-2 { background: radial-gradient(120% 140% at 85% 40%, #f5f1ec 0%, #ebe6df 50%, #ddd6cc 100%); }
+.hero-ton-3 { background: radial-gradient(120% 140% at 85% 40%, #fbeeed 0%, #f5e1df 50%, #ecd0cd 100%); }
+.hero-ton-4 { background: radial-gradient(120% 140% at 85% 40%, #f1efe8 0%, #e6e3d8 50%, #d9d4c5 100%); }
+
+.hero-ic {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1.05fr);
+    align-items: center;
+    gap: 40px;
+    min-height: clamp(420px, 52vw, 560px);
+    padding-block: 48px 112px;
+}
+
+/* --- Metin --- */
+
+.hero-metin > * {
+    opacity: 0;
+    transform: translateY(18px);
+    transition: opacity 0.6s ease, transform 0.6s ease;
+}
+
+.hero-slayt.aktif .hero-metin > * { opacity: 1; transform: none; }
+.hero-slayt.aktif .hero-metin > :nth-child(2) { transition-delay: 0.08s; }
+.hero-slayt.aktif .hero-metin > :nth-child(3) { transition-delay: 0.16s; }
+.hero-slayt.aktif .hero-metin > :nth-child(4) { transition-delay: 0.24s; }
+.hero-slayt.aktif .hero-metin > :nth-child(5) { transition-delay: 0.32s; }
+
+.hero-ust {
+    margin: 0 0 14px;
+    color: var(--gold-ink);
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+}
+
+.hero-ust span { color: var(--vurgu); margin-right: 6px; }
+
+.hero-baslik {
+    margin: 0 0 18px;
+    max-width: 16ch;
+    color: var(--ink);
+    font-size: clamp(30px, 3.8vw, 52px);
+    font-weight: 700;
+    line-height: 1.08;
+    letter-spacing: -0.02em;
+    text-wrap: balance;
+}
+
+.hero-fiyat {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 6px 14px;
+    margin: 0 0 28px;
+}
+
+.hero-fiyat strong { color: var(--vurgu); font-family: var(--font-baslik); font-size: clamp(24px, 2.4vw, 32px); font-weight: 700; }
+.hero-fiyat del { color: var(--ink-faint); font-size: 16px; }
+
+.hero-rozet {
+    padding: 4px 10px;
+    border-radius: var(--radius-hap);
+    background: var(--vurgu);
+    color: #ffffff;
+    font-size: 13px;
+    font-weight: 700;
+}
+
+.hero-dugmeler { display: flex; flex-wrap: wrap; align-items: center; gap: 14px 24px; }
+.hero-dugmeler .dugme { border-radius: var(--radius-hap); padding-inline: 32px; box-shadow: 0 10px 24px rgba(210, 28, 34, 0.25); }
+
+.hero-bag {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    color: var(--ink);
+    font-weight: 700;
+    font-size: 14px;
+    text-decoration: none;
+    border-bottom: 1.5px solid currentColor;
+    padding-bottom: 2px;
+}
+
+.hero-bag .ikon { width: 16px; height: 16px; transition: transform 0.2s; }
+.hero-bag:hover { color: var(--vurgu); }
+.hero-bag:hover .ikon { transform: translateX(3px); }
+
+.hero-not { margin: 26px 0 0; color: var(--ink-soft); font-size: 13px; }
+
+/* --- Görsel --- */
+
+.hero-gorsel {
+    position: relative;
+    display: grid;
+    place-items: center;
+    aspect-ratio: 1 / 1;
+    max-height: 480px;
+    justify-self: center;
+    width: 100%;
+}
+
+.hero-halka {
+    position: absolute;
+    inset: 8%;
+    border-radius: 50%;
+    background: radial-gradient(circle at 35% 30%, rgba(255, 255, 255, 0.85), rgba(255, 255, 255, 0.25) 60%, transparent 72%);
+    transform: scale(0.85);
+    transition: transform 1.2s cubic-bezier(.2, .8, .2, 1);
+}
+
+.hero-slayt.aktif .hero-halka { transform: scale(1); }
+
+.hero-gorsel img {
+    position: relative;
+    width: 86%;
+    height: 86%;
+    object-fit: contain;
+    mix-blend-mode: multiply;
+    transform: scale(0.94) translateY(12px);
+    opacity: 0;
+    transition: transform 1s cubic-bezier(.2, .8, .2, 1), opacity 0.8s ease;
+}
+
+.hero-slayt.aktif .hero-gorsel img { transform: none; opacity: 1; transition-delay: 0.1s; }
+.hero-gorsel:hover img { transform: scale(1.03); }
+
+/* --- Gezinti: küçük görseller + ilerleme çubuğu --- */
+
+.hero-gezinti {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 22px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+    z-index: 3;
+}
+
+.hero-kucukler { display: flex; gap: 10px; overflow-x: auto; scrollbar-width: none; }
+.hero-kucukler::-webkit-scrollbar { display: none; }
+
+.hero-kucuk {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    min-width: 0;
+    padding: 6px 14px 8px 6px;
+    border: 1px solid rgba(27, 25, 25, 0.08);
+    border-radius: 14px;
+    background: rgba(255, 255, 255, 0.55);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    cursor: pointer;
+    overflow: hidden;
+    transition: background 0.25s, border-color 0.25s;
+}
+
+.hero-kucuk img { width: 42px; height: 42px; object-fit: contain; border-radius: 10px; background: #ffffff; }
+.hero-kucuk-ad { font-size: 12.5px; font-weight: 700; color: var(--ink); white-space: nowrap; }
+.hero-kucuk:hover, .hero-kucuk.aktif { background: rgba(255, 255, 255, 0.95); border-color: rgba(27, 25, 25, 0.14); }
+
+.hero-ilerleme {
+    position: absolute;
+    left: 10px;
+    right: 10px;
+    bottom: 3px;
+    height: 2px;
+    border-radius: 2px;
+    background: rgba(27, 25, 25, 0.08);
+    overflow: hidden;
+}
+
+.hero-ilerleme i {
+    display: block;
+    height: 100%;
+    width: 100%;
+    background: var(--vurgu);
+    transform: scaleX(0);
+    transform-origin: left;
+}
+
+.hero-kucuk.aktif .hero-ilerleme i { animation: hero-dol var(--hero-sure) linear forwards; }
+.hero.durdu .hero-kucuk.aktif .hero-ilerleme i { animation-play-state: paused; }
+
+@keyframes hero-dol { to { transform: scaleX(1); } }
+
+.hero-oklar { display: flex; gap: 8px; flex: none; }
+
+.hero-ok {
+    display: grid;
+    place-items: center;
+    width: 46px;
+    height: 46px;
+    border: 1px solid rgba(27, 25, 25, 0.12);
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.7);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    color: var(--ink);
+    cursor: pointer;
+    transition: background 0.2s, color 0.2s, border-color 0.2s;
+}
+
+.hero-ok:hover { background: var(--ink); border-color: var(--ink); color: #ffffff; }
+.hero-ok .ikon { width: 18px; height: 18px; }
+
+@media (prefers-reduced-motion: reduce) {
+    .hero-slayt, .hero-metin > *, .hero-gorsel img, .hero-halka { transition: none !important; }
+    .hero-kucuk.aktif .hero-ilerleme i { animation: none; transform: scaleX(1); }
+}
+
+@media (max-width: 860px) {
+    .hero-ic {
+        grid-template-columns: minmax(0, 1fr);
+        gap: 8px;
+        min-height: 0;
+        padding-block: 24px 96px;
+        text-align: left;
+    }
+
+    .hero-gorsel { order: -1; max-height: 300px; width: 80%; }
+    .hero-baslik { font-size: clamp(26px, 7vw, 34px); }
+    .hero-fiyat { margin-bottom: 20px; }
+    .hero-oklar { display: none; }
+    .hero-kucuk { padding-right: 8px; }
+    .hero-kucuk-ad { display: none; }
+    .hero-gezinti { bottom: 16px; }
+}
+
+/* Sahne (yaşam alanı) fotoğrafı: zemine karıştırma yok, yuvarlak köşeli tam kart */
+.hero-gorsel-sahne { aspect-ratio: 5 / 4; max-height: 400px; width: auto; max-width: 100%; }
+.hero-gorsel-sahne .hero-halka { display: none; }
+
+.hero-gorsel-sahne img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    mix-blend-mode: normal;
+    border-radius: 28px;
+    box-shadow: 0 30px 60px -20px rgba(42, 32, 24, 0.35);
+}

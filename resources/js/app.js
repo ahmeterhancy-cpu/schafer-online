@@ -163,3 +163,69 @@ if (window.matchMedia('(max-width: 991px)').matches) {
 document.querySelectorAll('[data-otomatik-gonder]').forEach((alan) => {
     alan.addEventListener('change', () => alan.form?.submit());
 });
+
+/*
+ * Ana sayfa ürün slaytı: 6 sn'de bir ilerler (ilerleme çubuğu CSS
+ * animasyonunun bitişiyle eşzamanlı), üzerine gelince / odakta durur,
+ * sekme gizliyken durur, kaydırma (dokunmatik) ve klavye okları çalışır.
+ */
+document.querySelectorAll('[data-hero]').forEach((hero) => {
+    const slaytlar = [...hero.querySelectorAll('.hero-slayt')];
+    const kucukler = [...hero.querySelectorAll('[data-hero-git]')];
+    if (slaytlar.length < 2) return;
+
+    let aktif = 0;
+    const odakEleman = 'a, button';
+
+    const goster = (i) => {
+        aktif = (i + slaytlar.length) % slaytlar.length;
+        slaytlar.forEach((s, j) => {
+            const acik = j === aktif;
+            s.classList.toggle('aktif', acik);
+            s.setAttribute('aria-hidden', acik ? 'false' : 'true');
+            s.querySelectorAll(odakEleman).forEach((e) => {
+                if (e.classList.contains('hero-gorsel')) return;
+                if (acik) e.removeAttribute('tabindex'); else e.setAttribute('tabindex', '-1');
+            });
+        });
+        kucukler.forEach((k, j) => {
+            const acik = j === aktif;
+            k.classList.toggle('aktif', acik);
+            k.setAttribute('aria-selected', acik ? 'true' : 'false');
+            // İlerleme animasyonunu baştan başlat
+            const cubuk = k.querySelector('.hero-ilerleme i');
+            if (cubuk) { cubuk.style.animation = 'none'; void cubuk.offsetWidth; cubuk.style.animation = ''; }
+        });
+    };
+
+    kucukler.forEach((k) => k.addEventListener('click', () => goster(Number(k.dataset.heroGit))));
+    hero.querySelector('[data-hero-onceki]')?.addEventListener('click', () => goster(aktif - 1));
+    hero.querySelector('[data-hero-sonraki]')?.addEventListener('click', () => goster(aktif + 1));
+
+    hero.addEventListener('keydown', (e) => {
+        if (e.key === 'ArrowLeft') goster(aktif - 1);
+        if (e.key === 'ArrowRight') goster(aktif + 1);
+    });
+
+    let x0 = null;
+    hero.addEventListener('touchstart', (e) => { x0 = e.touches[0].clientX; }, { passive: true });
+    hero.addEventListener('touchend', (e) => {
+        if (x0 === null) return;
+        const dx = e.changedTouches[0].clientX - x0;
+        if (Math.abs(dx) > 40) goster(aktif + (dx < 0 ? 1 : -1));
+        x0 = null;
+    });
+
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
+    // İlerleme çubuğu dolunca sonraki slayt — süre CSS'teki --hero-sure ile tek yerde
+    kucukler.forEach((k) => k.querySelector('.hero-ilerleme i')
+        ?.addEventListener('animationend', () => { if (k.classList.contains('aktif')) goster(aktif + 1); }));
+
+    const durdur = (d) => hero.classList.toggle('durdu', d);
+    hero.addEventListener('mouseenter', () => durdur(true));
+    hero.addEventListener('mouseleave', () => durdur(false));
+    hero.addEventListener('focusin', () => durdur(true));
+    hero.addEventListener('focusout', () => durdur(false));
+    document.addEventListener('visibilitychange', () => durdur(document.hidden));
+});

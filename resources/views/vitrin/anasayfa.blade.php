@@ -78,35 +78,78 @@
                 </div>
             @endif
         </section>
-    @else
-        <section class="kahraman">
-            <div class="kap kahraman-ic">
-                <div class="kahraman-metin">
-                    <p class="etiket-hashtag">#SCHAFER #KIBRIS</p>
-                    <h1>Mutfağınız ve sofranız için Schafer kalitesi</h1>
-                    <p>
-                        Yemek takımlarından döküm tencerelere, Türk kahvesi makinelerinden nevresim takımlarına
-                        Schafer ürünleri Kıbrıs'ta.
-                        @if ($esik > 0)
-                            {{ number_format($esik, 0, ',', '.') }} TL üzeri siparişlerde teslimat ücretsiz.
-                        @endif
-                    </p>
-                    <div class="kahraman-dugmeler">
-                        <a class="dugme" href="{{ url('/koleksiyonlar') }}">Alışverişe başla</a>
-                        <a class="dugme dugme-cizgi" href="{{ url('/koleksiyonlar?sirala=indirim') }}">Kampanyalı ürünler</a>
-                    </div>
-                </div>
-                @if ($vitrinUrunleri->isNotEmpty())
-                    <div class="kahraman-gorseller">
-                        @foreach ($vitrinUrunleri as $u)
-                            <a href="{{ url('/urun/' . $u->slug) }}" class="kahraman-gorsel kahraman-gorsel-{{ $loop->iteration }}">
-                                <img src="{{ asset('storage/' . $u->hero_image) }}" alt="{{ $u->name }}"
-                                     fetchpriority="{{ $loop->first ? 'high' : 'auto' }}">
+    @elseif ($vitrinSlaytlari->isNotEmpty())
+        {{--
+            Ürün slaytları. Görseller beyaz zeminli ürün fotoğrafları:
+            mix-blend-mode: multiply ile beyaz zemin, slaytın renkli zeminine
+            karışır — ürün sahnede "yüzer". JS yoksa ilk slayt görünür kalır.
+        --}}
+        <section class="hero" aria-roledescription="carousel" aria-label="Öne çıkan ürünler" data-hero>
+            <div class="hero-sahne">
+                @foreach ($vitrinSlaytlari as $s)
+                    @php($u = $s['urun'])
+                    <article @class(['hero-slayt', 'hero-ton-' . (($loop->index % 4) + 1), 'aktif' => $loop->first])
+                             aria-roledescription="slide" aria-label="{{ $loop->iteration }} / {{ $loop->count }}"
+                             @unless ($loop->first) aria-hidden="true" @endunless>
+                        <div class="kap hero-ic">
+                            <div class="hero-metin">
+                                <p class="hero-ust">
+                                    <span>#SCHAFER</span> {{ $s['kategori']->name }}
+                                </p>
+                                @if ($loop->first)
+                                    <h1 class="hero-baslik">{{ \App\Support\Metin::baslik($u->name) }}</h1>
+                                @else
+                                    <h2 class="hero-baslik">{{ \App\Support\Metin::baslik($u->name) }}</h2>
+                                @endif
+                                <p class="hero-fiyat">
+                                    @if ($u->kart_eski_fiyat)
+                                        <del>{{ number_format($u->kart_eski_fiyat, 2, ',', '.') }} ₺</del>
+                                    @endif
+                                    <strong>{{ number_format((float) $u->min_price, 2, ',', '.') }} ₺</strong>
+                                    @if ($u->indirim_orani)
+                                        <span class="hero-rozet">-%{{ $u->indirim_orani }}</span>
+                                    @endif
+                                </p>
+                                <div class="hero-dugmeler">
+                                    <a class="dugme" href="{{ url('/urun/' . $u->slug) }}" @unless ($loop->first) tabindex="-1" @endunless>Ürünü incele</a>
+                                    <a class="hero-bag" href="{{ route('catalog.category', $s['kategori']->slug) }}" @unless ($loop->first) tabindex="-1" @endunless>
+                                        Tüm {{ $s['kategori']->name }} @include('vitrin.parca.ikon', ['ad' => 'ok-sag'])
+                                    </a>
+                                </div>
+                                @if ($esik > 0 && $loop->first)
+                                    <p class="hero-not">{{ number_format($esik, 0, ',', '.') }} TL üzeri siparişlerde teslimat ücretsiz</p>
+                                @endif
+                            </div>
+                            <a @class(['hero-gorsel', 'hero-gorsel-sahne' => ! \App\Support\Gorsel::beyazZeminMi($u->hero_image)])
+                               href="{{ url('/urun/' . $u->slug) }}" tabindex="-1" aria-hidden="true">
+                                <span class="hero-halka"></span>
+                                <img src="{{ asset('storage/' . $u->hero_image) }}" alt=""
+                                     @if ($loop->first) fetchpriority="high" @else loading="lazy" @endif>
                             </a>
+                        </div>
+                    </article>
+                @endforeach
+            </div>
+
+            @if ($vitrinSlaytlari->count() > 1)
+                <div class="kap hero-gezinti">
+                    <div class="hero-kucukler" role="tablist" aria-label="Slayt seç">
+                        @foreach ($vitrinSlaytlari as $s)
+                            <button type="button" role="tab" @class(['hero-kucuk', 'aktif' => $loop->first])
+                                    aria-selected="{{ $loop->first ? 'true' : 'false' }}"
+                                    aria-label="{{ $s['kategori']->name }}" data-hero-git="{{ $loop->index }}">
+                                <img src="{{ asset('storage/' . $s['urun']->hero_image) }}" alt="" loading="lazy">
+                                <span class="hero-kucuk-ad">{{ $s['kategori']->name }}</span>
+                                <span class="hero-ilerleme"><i></i></span>
+                            </button>
                         @endforeach
                     </div>
-                @endif
-            </div>
+                    <div class="hero-oklar">
+                        <button type="button" class="hero-ok" data-hero-onceki aria-label="Önceki slayt">@include('vitrin.parca.ikon', ['ad' => 'ok-sol'])</button>
+                        <button type="button" class="hero-ok" data-hero-sonraki aria-label="Sonraki slayt">@include('vitrin.parca.ikon', ['ad' => 'ok-sag'])</button>
+                    </div>
+                </div>
+            @endif
         </section>
     @endif
 
