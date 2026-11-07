@@ -130,7 +130,24 @@
             varyantAlani.value = varyant.id;
             dugme.disabled = false;
             dugme.textContent = 'Sepete ekle';
-            fiyatAlani.textContent = paraBicimi.format(varyant.fiyat) + ' TL';
+            // İndirimli varyantta üstü çizili eski fiyat + rozet (sunucu şablonuyla aynı yapı)
+            fiyatAlani.replaceChildren();
+            if (varyant.eski) {
+                const del = document.createElement('del');
+                del.className = 'urun-panel-eski';
+                del.textContent = paraBicimi.format(varyant.eski) + ' TL';
+                fiyatAlani.append(del);
+            }
+            const fiyat = document.createElement('span');
+            if (varyant.eski) fiyat.className = 'urun-panel-indirimli';
+            fiyat.textContent = paraBicimi.format(varyant.fiyat) + ' TL';
+            fiyatAlani.append(fiyat);
+            if (varyant.eski) {
+                const rozet = document.createElement('span');
+                rozet.className = 'rozet rozet-indirim urun-panel-rozet';
+                rozet.textContent = '-%' + Math.round((varyant.eski - varyant.fiyat) / varyant.eski * 100);
+                fiyatAlani.append(rozet);
+            }
             adetAlani.max = Math.min(20, varyant.stok);
 
             durum.textContent =

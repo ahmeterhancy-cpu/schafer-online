@@ -451,6 +451,11 @@
 .urun-sekmeler .sekme-panel { max-width: 900px; }
 
 .urun-aciklama { margin: 0; max-width: var(--measure); }
+.urun-aciklama p { margin: 0 0 14px; }
+.urun-aciklama h3 { margin: 22px 0 8px; font-size: 15px; font-weight: 600; color: var(--ink); }
+.urun-aciklama ul { margin: 0 0 14px; padding-left: 20px; }
+.urun-aciklama li { margin: 4px 0; }
+.urun-aciklama li::marker { color: var(--vurgu); }
 
 .urun-detay {
     width: 100%;
@@ -1399,3 +1404,8 @@
 
 .havale-hesap strong { display: block; color: var(--ink); }
 .havale-iban { font-family: ui-monospace, Consolas, monospace; font-size: 14px; color: var(--ink); letter-spacing: 0.02em; word-break: break-all; }
+
+/* Ürün sayfası: indirimli fiyat */
+.urun-panel-eski { margin-right: 10px; color: var(--ink-faint); font-size: 0.7em; font-weight: 400; }
+.urun-panel-indirimli { color: var(--vurgu); }
+.urun-panel-rozet { margin-left: 10px; font-size: 12px; vertical-align: middle; border-radius: var(--radius-hap); }

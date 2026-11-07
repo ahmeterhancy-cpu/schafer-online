@@ -60,6 +60,7 @@ class ProductController extends Controller
                 'degerler' => $v->optionValues->pluck('id')->values()->all(),
                 'stok' => $v->available_stock,
                 'fiyat' => (float) $v->price,
+                'eski' => $v->compare_at_price !== null && (float) $v->compare_at_price > (float) $v->price ? (float) $v->compare_at_price : null,
                 'sku' => $v->sku,
                 // Varyanta özel görsel: seçilince ana görsel olur (bkz. urun.js)
                 'gorsel' => $v->image,

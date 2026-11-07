@@ -118,7 +118,14 @@
                     {{ number_format((float) $urun->min_price, 2, ',', '.') }} –
                     {{ number_format((float) $urun->max_price, 2, ',', '.') }} TL
                 @else
-                    {{ number_format((float) $urun->min_price, 2, ',', '.') }} TL
+                    @php($eskiFiyat = (float) $urun->variants->where('is_active', true)->max('compare_at_price'))
+                    @if ($eskiFiyat > (float) $urun->min_price)
+                        <del class="urun-panel-eski">{{ number_format($eskiFiyat, 2, ',', '.') }} TL</del>
+                    @endif
+                    <span @class(['urun-panel-indirimli' => $eskiFiyat > (float) $urun->min_price])>{{ number_format((float) $urun->min_price, 2, ',', '.') }} TL</span>
+                    @if ($eskiFiyat > (float) $urun->min_price)
+                        <span class="rozet rozet-indirim urun-panel-rozet">-%{{ (int) round(($eskiFiyat - (float) $urun->min_price) / $eskiFiyat * 100) }}</span>
+                    @endif
                 @endif
             </p>
 
@@ -241,7 +248,7 @@
 
         <div class="sekme-panel" role="tabpanel" id="panel-aciklama" aria-labelledby="sekme-aciklama">
             @if ($urun->description)
-                <div class="urun-aciklama">{!! nl2br(e($urun->description)) !!}</div>
+                <div class="urun-aciklama">{!! \App\Support\Metin::aciklamaHtml($urun->description) !!}</div>
             @else
                 <p class="urun-aciklama">{{ $urun->short_description ?: 'Bu ürün için ayrıntılı açıklama henüz eklenmedi.' }}</p>
             @endif
