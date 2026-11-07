@@ -101,7 +101,7 @@
                         @foreach ($vitrinUrunleri as $u)
                             <a href="{{ url('/urun/' . $u->slug) }}" class="kahraman-gorsel kahraman-gorsel-{{ $loop->iteration }}">
                                 <img src="{{ asset('storage/' . $u->hero_image) }}" alt="{{ $u->name }}"
-                                     @if (! $loop->first) loading="lazy" @endif>
+                                     fetchpriority="{{ $loop->first ? 'high' : 'auto' }}">
                             </a>
                         @endforeach
                     </div>
