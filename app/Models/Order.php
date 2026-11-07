@@ -88,6 +88,32 @@ class Order extends Model
         return filled($this->invoice_number);
     }
 
+    public function getPaymentStatusLabelAttribute(): string
+    {
+        return match ($this->payment_status) {
+            'pending' => $this->payment_provider === 'kapida' ? 'Teslimatta alınacak' : 'Bekliyor',
+            'paid' => 'Ödendi',
+            'failed' => 'Başarısız',
+            'refunded' => 'İade edildi',
+            'partially_refunded' => 'Kısmi iade',
+            default => (string) $this->payment_status,
+        };
+    }
+
+    /** Adres dizisini çok satırlı metne çevirir (panel, fiş). */
+    public static function adresMetni(?array $a): string
+    {
+        $a ??= [];
+
+        return trim(implode("\n", array_filter([
+            $a['name'] ?? null,
+            $a['phone'] ?? null,
+            trim(($a['line1'] ?? '').' '.($a['line2'] ?? '')),
+            trim(implode(' / ', array_filter([$a['district'] ?? null, $a['city'] ?? null]))),
+            $a['postal_code'] ?? null,
+        ])));
+    }
+
     /** Faturada kullanılacak adres — ayrı verilmemişse teslimat adresi. */
     public function getInvoiceAddressAttribute(): array
     {

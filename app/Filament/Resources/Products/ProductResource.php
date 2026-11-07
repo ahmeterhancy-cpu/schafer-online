@@ -40,6 +40,20 @@ class ProductResource extends Resource
         return ProductsTable::configure($table);
     }
 
+    /** Üst çubuktaki genel arama (Ctrl+K): ürün adı ve SKU */
+    public static function getGloballySearchableAttributes(): array
+    {
+        return ['name', 'base_sku', 'variants.sku'];
+    }
+
+    public static function getGlobalSearchResultDetails(\Illuminate\Database\Eloquent\Model $record): array
+    {
+        return [
+            'Fiyat' => number_format((float) $record->min_price, 2, ',', '.').' TL',
+            'Stok' => (string) $record->total_stock,
+        ];
+    }
+
     public static function getRelations(): array
     {
         /*

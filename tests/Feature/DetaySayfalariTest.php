@@ -59,11 +59,18 @@ class DetaySayfalariTest extends TestCase
 
     public function test_siparis_detayi_acilir_ve_tarihleri_bicimli_gosterir(): void
     {
+        // Detay artık görüntüleme sayfasında; düzenleme yalnız not / takip no
+        $this->actingAs($this->yonetici)
+            ->get('/admin/orders/'.$this->order->id)
+            ->assertOk()
+            ->assertSee($this->order->number)
+            ->assertSee(now()->format('d.m.Y'))
+            ->assertSee('Ürünler');
+
         $this->actingAs($this->yonetici)
             ->get('/admin/orders/'.$this->order->id.'/edit')
             ->assertOk()
-            ->assertSee($this->order->number)
-            ->assertSee(now()->format('d.m.Y'));
+            ->assertSee('Takip numarası');
     }
 
     public function test_siparis_detayi_kaydedilebilir(): void

@@ -265,7 +265,7 @@ class PanelDavranisTest extends TestCase
 
         Livewire::actingAs($this->yonetici)
             ->test(ListProducts::class)
-            ->filterTable('stok_bitti')
+            ->filterTable('stok', 'bitti')
             ->assertCanSeeTableRecords([$this->urun->fresh()])
             ->assertCanNotSeeTableRecords([$dolu->fresh()]);
     }

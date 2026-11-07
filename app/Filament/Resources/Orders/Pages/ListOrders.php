@@ -6,7 +6,6 @@ use App\Filament\Resources\Orders\OrderResource;
 use App\Services\Faturalar;
 use App\Support\Yetki;
 use Filament\Actions\Action;
-use Filament\Actions\CreateAction;
 use Filament\Forms\Components\DatePicker;
 use Filament\Resources\Pages\ListRecords;
 
@@ -45,7 +44,6 @@ class ListOrders extends ListRecords
                     ['Content-Type' => 'text/csv; charset=UTF-8'],
                 )),
 
-            CreateAction::make(),
         ];
     }
 }

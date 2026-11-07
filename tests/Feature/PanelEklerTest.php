@@ -320,7 +320,9 @@ class PanelEklerTest extends TestCase
         Livewire::actingAs($this->yonetici)
             ->test(MagazaOzeti::class)
             ->assertSee('Kargolanacak')
-            ->assertSee('Takılı rezerv');
+            ->assertSee('Havale bekleyen')
+            // Takılı rezerv kartı yalnız sorun varken görünür
+            ->assertDontSee('Takılı rezerv');
     }
 
     // --- Takılı rezerv temizliği ---

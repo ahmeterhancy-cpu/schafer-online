@@ -108,6 +108,11 @@ Route::middleware('guest')->group(function () {
 
 Route::post('/cikis', [AuthController::class, 'logout'])->name('logout');
 
+// Panel: yazdırılabilir sipariş fişi (denetleyici panel yetkisini ayrıca denetler)
+Route::get('/admin/siparis/{order}/fis', \App\Http\Controllers\SiparisFisiController::class)
+    ->middleware('auth')
+    ->name('admin.siparis.fis');
+
 Route::middleware('auth')->prefix('hesap')->group(function () {
     Route::get('/', [AccountController::class, 'index'])->name('account.index');
     Route::get('/siparis/{number}', [AccountController::class, 'order'])->name('account.order');

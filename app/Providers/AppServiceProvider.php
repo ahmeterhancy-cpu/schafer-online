@@ -21,6 +21,11 @@ class AppServiceProvider extends ServiceProvider
 
     public function boot(): void
     {
+        // Filament "ürün Oluştur" yazıyordu (küçük harf + İngilizce kalıp); Türkçe: "Yeni ürün"
+        \Filament\Actions\CreateAction::configureUsing(
+            fn (\Filament\Actions\CreateAction $a) => $a->label(fn () => 'Yeni '.$a->getModelLabel())
+        );
+
         /*
          * Panelden girilen magaza ayarlari config('shop.*') uzerine
          * bindiriliyor. Uygulamanin geri kalani yalnizca config() okur.

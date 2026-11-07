@@ -63,12 +63,22 @@ class AdminPanelProvider extends PanelProvider
             ->discoverResources(in: app_path('Filament/Resources'), for: 'App\Filament\Resources')
             ->discoverPages(in: app_path('Filament/Pages'), for: 'App\Filament\Pages')
             ->pages([
-                Dashboard::class,
+                \App\Filament\Pages\Pano::class,
             ])
+            ->globalSearchKeyBindings(['ctrl+k', 'command+k'])
+            // Müşteriler: kullanıcı listesinin "sipariş vermiş olanlar" görünümü
+            ->navigationItems([
+                \Filament\Navigation\NavigationItem::make('Müşteriler')
+                    ->group('Satış')
+                    ->icon('heroicon-o-user-group')
+                    ->sort(3)
+                    ->url(fn () => \App\Filament\Resources\Users\UserResource::getUrl('index', [
+                        'tableFilters' => ['alisveris_yapan' => ['isActive' => true]],
+                    ])),
+            ])
+            ->sidebarCollapsibleOnDesktop()
             ->discoverWidgets(in: app_path('Filament/Widgets'), for: 'App\Filament\Widgets')
-            ->widgets([
-                AccountWidget::class,
-            ])
+            ->widgets([])
             ->middleware([
                 EncryptCookies::class,
                 AddQueuedCookiesToResponse::class,

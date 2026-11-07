@@ -25,6 +25,8 @@ class MagazaOzeti extends StatsOverviewWidget
 {
     protected static ?int $sort = 1;
 
+    protected int|string|array $columnSpan = 'full';
+
     protected function getColumns(): int
     {
         return 3;
@@ -66,7 +68,7 @@ class MagazaOzeti extends StatsOverviewWidget
             ->where(fn ($q) => $q->whereNull('payment_provider')->orWhere('payment_provider', '!=', 'havale'))
             ->count();
 
-        return [
+        return array_merge([
             Stat::make('Bugün', $bugunAdet.' sipariş')
                 // Ciro yalnız yöneticiye (bkz. App\Support\Yetki)
                 ->description(Yetki::yonetici() ? number_format($bugunCiro, 2, ',', '.').' TL ciro' : 'Ödemesi alınan sipariş')
@@ -98,10 +100,12 @@ class MagazaOzeti extends StatsOverviewWidget
                 ->color($stokTalebi > 0 ? 'info' : 'gray')
                 ->url(StockInquiryResource::getUrl('index')),
 
+        ], $takiliRezerv > 0 ? [
+            // Yalnız sorun varken görünür
             Stat::make('Takılı rezerv', (string) $takiliRezerv)
                 ->description($takiliRezerv > 0 ? 'Ödemesi yarıda kalan sipariş stok tutuyor' : 'Sorun yok')
                 ->color($takiliRezerv > 0 ? 'danger' : 'success')
                 ->url(OrderResource::getUrl('index', ['tableFilters' => ['takili_rezerv' => ['isActive' => true]]])),
-        ];
+        ] : []);
     }
 }

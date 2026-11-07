@@ -1,6 +1,6 @@
 # Schafer Kıbrıs — Durum
 
-Son güncelleme: 2026-11-07 · **406 test** geçiyor
+Son güncelleme: 2026-11-07 · **419 test** geçiyor
 
 schaferkibris.com (WooCommerce + Basel teması) yerine yönetim panelli yeni
 online mağaza. Laravel 13 + Filament 5, Blade, sıfır çalışma zamanı kütüphanesi.
@@ -81,6 +81,32 @@ kapatılır (`App\Support\OdemeYontemleri`, anahtar = `orders.payment_provider`)
 - Kartın 90 dk "takılı rezerv" kuralı havaleye dokunmaz; panodaki "Takılı rezerv"
   havaleyi saymaz, ayrı "Havale bekleyen" kartı var.
 - Sipariş numarası öneki `SCH-` (Zeys'ten kalan `ZEY-` düzeltildi).
+
+## Yönetim paneli
+
+- **Pano**: yapılacak işler kartları (kargolanacak, havale bekleyen, iade,
+  stoğu biten; takılı rezerv yalnız sorun varken), satış grafiği (7/30/90 gün,
+  12 ay; ciro + adet + ortalama sepet — yalnız yönetici), son siparişler,
+  30 günün çok satanları, kritik stok listesi.
+- **Ürünler**: kategori ağacıyla süzgeç (alt kategoriler dahil), ad/SKU/barkod
+  araması, tek tip üründe **satır içi fiyat ve stok**, satışta/öne çıkan
+  anahtarları, süzgeçler (stok, indirimli, görselsiz, kategorisiz).
+  **Toplu işlemler** (`App\Services\TopluUrunIslemleri`): satışa al/kaldır,
+  öne çıkar, kategoriye ekle/çıkar/değiştir, % ya da TL fiyat değişimi
+  (yuvarlamalı), kampanya indirimi (birikmez) / indirimi kaldır, stoğu
+  ayarla (rezervin altına inmez).
+- **Siparişler**: yeni detay sayfası (kalemler, tutarlar, müşteri/adres,
+  ödeme, teslimat, fatura, notlar) + üstte sıradaki adım düğmesi; işlemler
+  `Orders\SiparisIslemleri`'nde tek yerde (liste + detay). Yazdırılabilir
+  sipariş fişi `/admin/siparis/{id}/fis` (kapıda tahsil tutarı, imza alanı).
+  Elle sipariş oluşturma kaldırıldı (işlevsiz boş formdu). Menü rozeti =
+  bekleyen iş.
+- **Kategoriler**: ağaç sırası, satıştaki ürün sayısı (tıklayınca ürün
+  listesi süzülür), satır içi "Vitrinde" / "Ana sayfada bölüm" / sıra.
+- **Müşteriler** (Satış menüsü): sipariş vermiş üyeler, toplam harcama,
+  son sipariş; üye sayfasında sipariş geçmişi.
+- Genel arama (Ctrl+K): ürün adı/SKU, sipariş no/müşteri/telefon.
+- Filament "ürün Oluştur" yerine "Yeni ürün".
 
 ## Düzeltilen hatalar (devralınan altyapıda)
 

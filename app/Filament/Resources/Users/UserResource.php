@@ -63,6 +63,14 @@ class UserResource extends Resource
         return true;
     }
 
+    /** Kullanıcı sayfasının altında sipariş geçmişi */
+    public static function getRelations(): array
+    {
+        return [
+            RelationManagers\SiparislerRelationManager::class,
+        ];
+    }
+
     public static function getPages(): array
     {
         return [
