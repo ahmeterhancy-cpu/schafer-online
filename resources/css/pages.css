@@ -210,7 +210,8 @@
 }
 
 .urun-galeri-ana > * { min-width: 0; min-height: 0; }
-.urun-galeri-ana img { width: 100%; height: 100%; object-fit: cover; }
+/* Ürün fotoğrafları beyaz zeminli; kırpmadan sığdır */
+.urun-galeri-ana img { width: 100%; height: 100%; object-fit: contain; background: #ffffff; }
 .urun-galeri-ana .urun-harf { font-size: 120px; }
 
 /*
@@ -225,6 +226,9 @@
     min-height: 0;
     max-height: 100%;
 }
+
+/* Tek görselli üründe şerit gizli kalmalı (display:flex [hidden]'ı eziyordu) */
+.galeri-serit[hidden] { display: none; }
 
 .urun-galeri-kucuk {
     display: flex;
