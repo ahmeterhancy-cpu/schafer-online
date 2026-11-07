@@ -23,7 +23,7 @@
         <div class="alan">
             <label for="siparis_no">Sipariş numarası</label>
             <input type="text" id="siparis_no" name="siparis_no"
-                   value="{{ old('siparis_no') }}" placeholder="ZEY-260921-0001"
+                   value="{{ old('siparis_no') }}" placeholder="SCH-260921-0001"
                    class="metin-girdi" required>
             @error('siparis_no') <span class="alan-hata">{{ $message }}</span> @enderror
         </div>

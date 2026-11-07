@@ -31,7 +31,7 @@ class PersonelYetkiTest extends TestCase
     private function siparis(array $alanlar = []): Order
     {
         return Order::create(array_merge([
-            'number' => 'ZEY-260921-0001',
+            'number' => 'SCH-260921-0001',
             'customer_name' => 'Ayşe Yılmaz',
             'customer_email' => 'ayse@example.test',
             'customer_phone' => '5551112233',

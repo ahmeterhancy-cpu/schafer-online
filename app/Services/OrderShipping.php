@@ -19,7 +19,10 @@ class OrderShipping
     /** Kargoya verildi. */
     public function markShipped(Order $order, ?string $carrier, ?string $tracking): void
     {
-        if ($order->payment_status !== 'paid') {
+        // Kapıda ödeme: ödeme teslimatta alınır, ödenmeden kargolanır
+        $kapida = $order->payment_provider === 'kapida' && $order->payment_status === 'pending';
+
+        if ($order->payment_status !== 'paid' && ! $kapida) {
             throw new RuntimeException('Ödemesi tamamlanmamış sipariş kargoya verilemez.');
         }
 
@@ -53,6 +56,9 @@ class OrderShipping
             'status' => 'delivered',
             'delivered_at' => now(),
         ])->save();
+
+        // Kapıda ödeme teslimatta tahsil edildi
+        app(CevrimdisiOdeme::class)->kapidaTahsilEdildi($order->fresh());
     }
 
     /** Sepet tutarına göre kargo bedeli — kasada ve vitrinde aynı kural. */

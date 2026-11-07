@@ -36,6 +36,8 @@ class Checkout
         ?string $contractVersion = null,
         ?string $ip = null,
         ?string $preinfoVersion = null,
+        string $paymentMethod = 'paytr',
+        float $paymentFee = 0.0,
     ): Order {
         $lines = $this->cart->lines();
 
@@ -56,7 +58,8 @@ class Checkout
 
         $order = DB::transaction(function () use (
             $lines, $customer, $shipping, $billing, $userId, $note,
-            $subtotal, $discount, $shippingTotal, $coupon, $contractVersion, $ip, $preinfoVersion
+            $subtotal, $discount, $shippingTotal, $coupon, $contractVersion, $ip, $preinfoVersion,
+            $paymentMethod, $paymentFee
         ) {
             $order = Order::create([
                 'number' => Order::nextNumber(),
@@ -72,7 +75,10 @@ class Checkout
                 'subtotal' => $subtotal,
                 'discount_total' => $discount,
                 'shipping_total' => $shippingTotal,
-                'grand_total' => round($subtotal - $discount + $shippingTotal, 2),
+                // Ödeme yöntemi bedeli (ör. kapıda ödeme) toplama dahil, ayrı satırda saklanır
+                'payment_fee' => round(max(0, $paymentFee), 2),
+                'payment_provider' => $paymentMethod,
+                'grand_total' => round($subtotal - $discount + $shippingTotal + max(0, $paymentFee), 2),
                 'coupon_code' => $coupon?->code,
                 'customer_note' => $note,
                 'contract_version' => $contractVersion,

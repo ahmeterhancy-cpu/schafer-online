@@ -31,7 +31,7 @@ class FaturaKaydiTest extends TestCase
     private function siparis(array $alanlar = []): Order
     {
         return Order::create(array_merge([
-            'number' => 'ZEY-260921-0001',
+            'number' => 'SCH-260921-0001',
             'customer_name' => 'Ayşe Yılmaz',
             'customer_email' => 'ayse@example.test',
             'customer_phone' => '5551112233',
@@ -67,7 +67,7 @@ class FaturaKaydiTest extends TestCase
 
         Mail::assertSent(FaturaGonderimi::class, fn (FaturaGonderimi $m) => $m->hasTo('ayse@example.test')
             && count($m->attachments()) === 1
-            && str_contains($m->envelope()->subject, 'ZEY-260921-0001'));
+            && str_contains($m->envelope()->subject, 'SCH-260921-0001'));
     }
 
     public function test_personel_de_fatura_girebilir(): void
@@ -81,8 +81,8 @@ class FaturaKaydiTest extends TestCase
 
     public function test_fatura_numarasi_tekrar_edemez(): void
     {
-        $this->siparis(['number' => 'ZEY-A', 'invoice_number' => 'F-1']);
-        $ikinci = $this->siparis(['number' => 'ZEY-B']);
+        $this->siparis(['number' => 'SCH-A', 'invoice_number' => 'F-1']);
+        $ikinci = $this->siparis(['number' => 'SCH-B']);
 
         Livewire::actingAs(User::factory()->create(['role' => 'admin']))->test(ListOrders::class)
             ->callTableAction('fatura', $ikinci, [
@@ -138,24 +138,24 @@ class FaturaKaydiTest extends TestCase
     public function test_muhasebe_dokumu(): void
     {
         $this->siparis(['invoice_number' => 'F-100', 'invoice_date' => '2026-09-11']);
-        $this->siparis(['number' => 'ZEY-ODENMEDI', 'payment_status' => 'pending', 'paid_at' => null]);
-        $this->siparis(['number' => 'ZEY-EYLUL-DISI', 'paid_at' => '2026-08-31 23:00']);
+        $this->siparis(['number' => 'SCH-ODENMEDI', 'payment_status' => 'pending', 'paid_at' => null]);
+        $this->siparis(['number' => 'SCH-EYLUL-DISI', 'paid_at' => '2026-08-31 23:00']);
 
         $csv = app(Faturalar::class)->muhasebeCsv('2026-09-01', '2026-09-30');
 
         $this->assertStringStartsWith("\xEF\xBB\xBF", $csv);
-        $this->assertStringContainsString('ZEY-260921-0001;"10.09.2026 12:00"', $csv);
+        $this->assertStringContainsString('SCH-260921-0001;"10.09.2026 12:00"', $csv);
         $this->assertStringContainsString('Kurumsal;"Örnek Tekstil A.Ş.";1234567890;Edirne', $csv);
         $this->assertStringContainsString('2890,00', $csv);
         $this->assertStringContainsString('F-100;11.09.2026', $csv);
-        $this->assertStringNotContainsString('ZEY-ODENMEDI', $csv);
-        $this->assertStringNotContainsString('ZEY-EYLUL-DISI', $csv);
+        $this->assertStringNotContainsString('SCH-ODENMEDI', $csv);
+        $this->assertStringNotContainsString('SCH-EYLUL-DISI', $csv);
     }
 
     public function test_faturasiz_suzgeci(): void
     {
-        $kesilmis = $this->siparis(['number' => 'ZEY-A', 'invoice_number' => 'F-1']);
-        $bekleyen = $this->siparis(['number' => 'ZEY-B']);
+        $kesilmis = $this->siparis(['number' => 'SCH-A', 'invoice_number' => 'F-1']);
+        $bekleyen = $this->siparis(['number' => 'SCH-B']);
 
         Livewire::actingAs(User::factory()->create(['role' => 'admin']))->test(ListOrders::class)
             ->filterTable('faturasiz')

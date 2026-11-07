@@ -55,7 +55,7 @@ class EpostaOnizleme
     private static function ornekSiparis(): Order
     {
         $o = new Order([
-            'number' => 'ZEY-ORNEK-0001',
+            'number' => 'SCH-ORNEK-0001',
             'customer_name' => 'Ayşe Yılmaz',
             'customer_email' => 'ayse@example.test',
             'customer_phone' => '5551112233',

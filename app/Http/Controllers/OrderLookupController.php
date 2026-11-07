@@ -17,7 +17,7 @@ use RuntimeException;
  * sipariş numarası + e-posta ile sorgulanıyor.
  *
  * GÜVENLİK: sipariş numarası sıralı ve tahmin edilebilir
- * (ZEY-260921-0001 → -0002). Tek başına yeterli değil, e-posta da
+ * (SCH-260921-0001 → -0002). Tek başına yeterli değil, e-posta da
  * doğrulanıyor. Doğrulama sonrası İMZALI bir adrese yönlendiriliyor;
  * böylece sayfa yenilendiğinde ya da bağlantı paylaşıldığında e-posta
  * tekrar sorulmuyor ama başkasının siparişi de açılamıyor.

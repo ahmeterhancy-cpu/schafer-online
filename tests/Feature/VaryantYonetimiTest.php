@@ -140,7 +140,7 @@ class VaryantYonetimiTest extends TestCase
 
         // L satılmış olsun
         $l = $urun->fresh()->variants()->with('optionValues.option')->get()->firstWhere('label', 'L');
-        $siparis = Order::create(['number' => 'ZEY-1', 'customer_name' => 'A', 'customer_email' => 'a@x.test', 'customer_phone' => '1', 'shipping_address' => [], 'grand_total' => 900]);
+        $siparis = Order::create(['number' => 'SCH-1', 'customer_name' => 'A', 'customer_email' => 'a@x.test', 'customer_phone' => '1', 'shipping_address' => [], 'grand_total' => 900]);
         $siparis->items()->create(['product_id' => $urun->id, 'product_variant_id' => $l->id, 'name' => 'Etek', 'unit_price' => 900, 'quantity' => 1, 'line_total' => 900]);
 
         $sonuc = $servis->esitle($urun, [['ozellik_id' => $beden['ozellik_id'], 'degerler' => $this->degerler('Beden', ['S'])]]);

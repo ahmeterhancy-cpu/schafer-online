@@ -124,7 +124,7 @@ class SiparisSorgulaTest extends TestCase
         ])->assertSessionHasErrors('siparis_no');
 
         $olmayan = $this->post('/siparis-sorgula', [
-            'siparis_no' => 'ZEY-991231-9999',
+            'siparis_no' => 'SCH-991231-9999',
             'eposta' => 'baskasi@example.test',
         ])->assertSessionHasErrors('siparis_no');
 

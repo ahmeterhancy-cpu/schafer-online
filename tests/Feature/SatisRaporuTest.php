@@ -36,7 +36,7 @@ class SatisRaporuTest extends TestCase
         $this->sira++;
 
         $order = Order::create(array_merge([
-            'number' => 'ZEY-260921-'.str_pad((string) $this->sira, 4, '0', STR_PAD_LEFT),
+            'number' => 'SCH-260921-'.str_pad((string) $this->sira, 4, '0', STR_PAD_LEFT),
             'customer_name' => 'Ayşe',
             'customer_email' => 'a@example.test',
             'customer_phone' => '555',

@@ -103,6 +103,7 @@ class OrderForm
                     TextInput::make('subtotal')->label('Ara toplam')->disabled()->prefix('₺'),
                     TextInput::make('discount_total')->label('İndirim')->disabled()->prefix('₺'),
                     TextInput::make('shipping_total')->label('Kargo')->disabled()->prefix('₺'),
+                    TextInput::make('payment_fee')->label('Ödeme yöntemi bedeli')->disabled()->prefix('₺'),
                     TextInput::make('grand_total')->label('Toplam')->disabled()->prefix('₺'),
                     TextInput::make('refunded_total')->label('İade edilen')->disabled()->prefix('₺'),
                     TextInput::make('coupon_code')->label('Kupon')->disabled()->placeholder('—'),
@@ -112,7 +113,8 @@ class OrderForm
                 ->columns(3)
                 ->schema([
                     TextInput::make('payment_status')->label('Ödeme durumu')->disabled(),
-                    TextInput::make('payment_provider')->label('Sağlayıcı')->disabled()->placeholder('—'),
+                    TextInput::make('payment_provider')->label('Ödeme yöntemi')->disabled()->placeholder('—')
+                        ->formatStateUsing(fn (?string $state) => $state ? \App\Support\OdemeYontemleri::ad($state) : null),
                     TextInput::make('payment_ref')->label('Ödeme referansı')->disabled()->placeholder('—'),
                     TextInput::make('stock_state')->label('Stok durumu')->disabled(),
                     TextInput::make('paid_at')->label('Ödeme zamanı')->disabled()

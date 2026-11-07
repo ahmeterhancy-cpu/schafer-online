@@ -1340,3 +1340,62 @@
     .iletisim-yonlendirme { grid-template-columns: minmax(0, 1fr); }
     .harita-cerceve { aspect-ratio: 3 / 2; }
 }
+
+
+/* --- Kasa: ödeme yöntemi seçimi --- */
+.odeme-yontemleri { display: grid; gap: 10px; }
+
+.yontem-secenek {
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+    padding: 14px 16px;
+    border: 1px solid var(--line-strong);
+    border-radius: var(--radius-kucuk);
+    background: #ffffff;
+    cursor: pointer;
+    transition: border-color 0.2s, background 0.2s;
+}
+
+.yontem-secenek:hover { border-color: var(--ink-faint); }
+.yontem-secenek:has(input:checked) { border-color: var(--vurgu); background: var(--vurgu-acik); }
+.yontem-secenek input { margin-top: 4px; accent-color: var(--vurgu); }
+.yontem-govde { display: flex; flex-direction: column; gap: 2px; }
+.yontem-govde strong { color: var(--ink); font-size: 14px; }
+.yontem-govde small { margin-left: 6px; color: var(--vurgu); font-weight: 700; }
+.yontem-govde > span { font-size: 13px; color: var(--ink-soft); line-height: 1.5; }
+
+/* Özet ve düğme seçime göre — :has desteklemeyen tarayıcıda kart görünümü kalır */
+.ozet-kapida { display: none; }
+.odeme-duzen:has(input[name="odeme_yontemi"][value="kapida"]:checked) .ozet-kapida { display: flex; }
+.odeme-duzen:has(input[name="odeme_yontemi"][value="kapida"]:checked) .ozet-toplam-normal:has(~ .ozet-kapida) { display: none; }
+
+.odeme-dugme .dugme-siparis { display: none; }
+.odeme-duzen:has(input[name="odeme_yontemi"]:not([value="paytr"]):checked) .odeme-dugme .dugme-kart,
+.odeme-duzen:has(input[name="odeme_yontemi"]:not([value="paytr"]):checked) .ozet-not-kart { display: none; }
+.odeme-duzen:has(input[name="odeme_yontemi"]:not([value="paytr"]):checked) .odeme-dugme .dugme-siparis { display: inline; }
+
+/* --- Sipariş sayfası: havale / kapıda ödeme talimatı --- */
+.odeme-talimat {
+    margin: 0 0 28px;
+    padding: 20px 22px;
+    border: 1px solid var(--bej);
+    border-left: 4px solid var(--vurgu);
+    background: var(--bej-acik);
+    border-radius: var(--radius-kucuk);
+}
+
+.odeme-talimat h3 { margin: 0 0 8px; font-size: 16px; }
+.odeme-talimat p { margin: 0 0 10px; }
+.havale-hesaplar { display: grid; gap: 10px; margin: 12px 0; }
+
+.havale-hesap {
+    padding: 12px 14px;
+    background: #ffffff;
+    border: 1px solid var(--line);
+    border-radius: var(--radius-kucuk);
+    font-size: 13.5px;
+}
+
+.havale-hesap strong { display: block; color: var(--ink); }
+.havale-iban { font-family: ui-monospace, Consolas, monospace; font-size: 14px; color: var(--ink); letter-spacing: 0.02em; word-break: break-all; }

@@ -7,6 +7,7 @@ use App\Models\Setting;
 use App\Services\LegalPlaceholders;
 use BackedEnum;
 use Filament\Actions\Action;
+use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
 use Filament\Notifications\Notification;
@@ -89,6 +90,45 @@ class SiteAyarlari extends Page
                             ->placeholder('Yurtiçi Kargo'),
                     ]),
 
+                Section::make('Ödeme yöntemleri')
+                    ->description('Kasada sunulan yöntemler. Kapatılan yöntem yeni siparişlerde görünmez; verilmiş siparişler etkilenmez.')
+                    ->columns(3)
+                    ->schema([
+                        Toggle::make('odeme_kart')
+                            ->label('Kredi / banka kartı (PayTR)')
+                            ->helperText('PayTR anahtarları .env dosyasında tanımlı olmalı.'),
+                        Toggle::make('odeme_havale')
+                            ->label('Havale / EFT')
+                            ->helperText('Aşağıya en az bir hesap yazılmadıkça kasada görünmez.'),
+                        Toggle::make('odeme_kapida')
+                            ->label('Kapıda ödeme'),
+
+                        Textarea::make('havale_hesaplari')
+                            ->label('Havale hesapları')
+                            ->rows(3)
+                            ->placeholder('Banka adı | Hesap sahibi | TR00 0000 0000 0000 0000 0000 00')
+                            ->helperText('Her satıra bir hesap: Banka | Hesap sahibi | IBAN. Sipariş sayfasında ve e-postada gösterilir.')
+                            ->columnSpan(2),
+                        TextInput::make('havale_sure_gun')
+                            ->label('Havale ödeme süresi (gün)')
+                            ->numeric()
+                            ->minValue(1)
+                            ->maxValue(14)
+                            ->required()
+                            ->helperText('Bu sürede ödemesi onaylanmayan havale siparişi iptal edilir, ayrılan stok serbest kalır.'),
+
+                        TextInput::make('kapida_ek_ucret')
+                            ->label('Kapıda ödeme bedeli (TL)')
+                            ->numeric()
+                            ->minValue(0)
+                            ->required()
+                            ->helperText('0 ise ek ücret alınmaz.'),
+                        TextInput::make('kapida_aciklama')
+                            ->label('Kapıda ödeme açıklaması')
+                            ->maxLength(200)
+                            ->columnSpan(2),
+                    ]),
+
                 Section::make('Bildirim ve stok')
                     ->columns(2)
                     ->schema([
@@ -106,14 +146,14 @@ class SiteAyarlari extends Page
                     ]),
 
                 Section::make('Satıcı bilgileri')
-                    ->description('Yasal metinlerde, faturada ve e-postalarda görünür. 6502 sayılı kanun gereği eksiksiz olmalı.')
+                    ->description('Yasal metinlerde, faturada ve e-postalarda görünür. Tüketici mevzuatı gereği eksiksiz olmalı.')
                     ->columns(2)
                     ->schema([
                         TextInput::make('satici_unvan')->label('Ticari unvan')->columnSpanFull(),
                         TextInput::make('satici_adres')->label('Adres')->columnSpanFull(),
                         TextInput::make('satici_telefon')->label('Telefon')->tel(),
                         TextInput::make('satici_eposta')->label('E-posta')->email(),
-                        TextInput::make('satici_mersis')->label('MERSİS no'),
+                        TextInput::make('satici_mersis')->label('Ticaret sicil no'),
                         TextInput::make('satici_vergi_dairesi')->label('Vergi dairesi'),
                         TextInput::make('satici_vergi_no')->label('Vergi no'),
                         TextInput::make('instagram')->label('Instagram kullanıcı adı')->prefix('@'),

@@ -32,6 +32,15 @@ class PaymentRefunds
         return $this->paytr->isConfigured();
     }
 
+    /**
+     * PayTR iadesi yalnız kartla (PayTR) ödenmiş siparişte yapılabilir.
+     * Havale/kapıda ödemenin iadesi elden/hesaba yapılır ("Elle iade ettim").
+     */
+    public static function kartlaOdendi(Order $order): bool
+    {
+        return in_array($order->payment_provider, [null, 'paytr'], true);
+    }
+
     /** Onaylanmış iade talebinin parasını gönder, talebi tamamla. */
     public function refundReturn(ReturnRequest $talep): void
     {
@@ -51,6 +60,11 @@ class PaymentRefunds
             }
 
             $order = $kilitli->order;
+
+            if (! static::kartlaOdendi($order)) {
+                throw new RuntimeException('Bu sipariş kartla ödenmedi; iadeyi elden/hesaba yapıp "Elle iade ettim" deyin.');
+            }
+
             $sonuc = $this->paytr->refund($order, (float) $kilitli->refund_amount);
 
             if (! $sonuc['ok']) {
@@ -76,6 +90,10 @@ class PaymentRefunds
 
             if ($kilitli->payment_status !== 'paid' || (float) $kilitli->refunded_total > 0) {
                 throw new RuntimeException('Yalnızca hiç iade yapılmamış ödenmiş sipariş tamamen iade edilebilir.');
+            }
+
+            if (! static::kartlaOdendi($kilitli)) {
+                throw new RuntimeException('Bu sipariş kartla ödenmedi; PayTR ile iade edilemez.');
             }
 
             $sonuc = $this->paytr->refund($kilitli, (float) $kilitli->grand_total);

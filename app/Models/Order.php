@@ -17,6 +17,7 @@ class Order extends Model
         'subtotal' => 'decimal:2',
         'discount_total' => 'decimal:2',
         'shipping_total' => 'decimal:2',
+        'payment_fee' => 'decimal:2',
         'grand_total' => 'decimal:2',
         'refunded_total' => 'decimal:2',
         'paid_at' => 'datetime',
@@ -63,10 +64,10 @@ class Order extends Model
         };
     }
 
-    /** ZEY-260920-0001 — gün içinde artan sıra. */
+    /** SCH-260920-0001 — gün içinde artan sıra. */
     public static function nextNumber(): string
     {
-        $prefix = 'ZEY-'.now()->format('ymd');
+        $prefix = 'SCH-'.now()->format('ymd');
 
         $last = static::where('number', 'like', $prefix.'-%')
             ->orderByDesc('number')

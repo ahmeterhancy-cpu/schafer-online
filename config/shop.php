@@ -40,6 +40,21 @@ return [
         'firma' => env('SHOP_KARGO_FIRMA', ''),
     ],
 
+    /*
+     * Odeme yontemleri (bkz. App\Support\OdemeYontemleri).
+     * Havale, hesap bilgisi girilmeden kasada gosterilmez.
+     * havale_hesaplari: her satir "Banka | Hesap sahibi | IBAN".
+     */
+    'odeme' => [
+        'kart' => (bool) env('SHOP_ODEME_KART', true),
+        'havale' => (bool) env('SHOP_ODEME_HAVALE', true),
+        'kapida' => (bool) env('SHOP_ODEME_KAPIDA', true),
+        'havale_hesaplari' => env('SHOP_HAVALE_HESAPLARI', ''),
+        'havale_sure_gun' => (int) env('SHOP_HAVALE_SURE_GUN', 3),
+        'kapida_ek_ucret' => (float) env('SHOP_KAPIDA_EK_UCRET', 0),
+        'kapida_aciklama' => env('SHOP_KAPIDA_ACIKLAMA', 'Ürünü teslim alırken nakit ya da kartla ödersiniz.'),
+    ],
+
     // Yeni siparis bildiriminin gidecegi magaza adresi (bos ise gonderilmez)
     'siparis_bildirim_epostasi' => env('SHOP_SIPARIS_BILDIRIM', ''),
 

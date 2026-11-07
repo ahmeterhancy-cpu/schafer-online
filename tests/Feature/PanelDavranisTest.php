@@ -384,7 +384,7 @@ class PanelDavranisTest extends TestCase
         $belge = LegalDocument::publish('mesafeli-satis', 'Mesafeli Satış Sözleşmesi', 'Metin');
 
         Order::create([
-            'number' => 'ZEY-260921-0099',
+            'number' => 'SCH-260921-0099',
             'customer_name' => 'Ayşe',
             'customer_email' => 'a@example.test',
             'customer_phone' => '555',
@@ -412,7 +412,7 @@ class PanelDavranisTest extends TestCase
         $belge = LegalDocument::publish('kvkk', 'KVKK', 'Metin');
 
         Order::create([
-            'number' => 'ZEY-260921-0098',
+            'number' => 'SCH-260921-0098',
             'customer_name' => 'Ayşe',
             'customer_email' => 'a@example.test',
             'customer_phone' => '555',

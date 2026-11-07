@@ -197,6 +197,7 @@ class ReturnRequestsTable
                     ->visible(fn (ReturnRequest $kayit) => $kayit->status === 'approved'
                         && ! $kayit->is_exchange
                         && ! $kayit->payment_refunded_at
+                        && PaymentRefunds::kartlaOdendi($kayit->order)
                         && app(PaymentRefunds::class)->kullanilabilir())
                     ->action(fn (ReturnRequest $record) => static::yurut(
                         fn () => app(PaymentRefunds::class)->refundReturn($record),

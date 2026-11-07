@@ -3,10 +3,12 @@
 namespace App\Filament\Resources\Orders\Tables;
 
 use App\Models\Order;
+use App\Services\CevrimdisiOdeme;
 use App\Services\Faturalar;
 use App\Services\OrderShipping;
 use App\Services\OrderStock;
 use App\Services\PaymentRefunds;
+use App\Support\OdemeYontemleri;
 use App\Support\Yetki;
 use Filament\Actions\Action;
 use Filament\Actions\EditAction;
@@ -67,6 +69,17 @@ class OrdersTable
                         'refunded', 'partially_refunded' => 'warning',
                         default => 'gray',
                     }),
+
+                TextColumn::make('payment_provider')
+                    ->label('Yöntem')
+                    ->badge()
+                    ->formatStateUsing(fn (?string $state) => OdemeYontemleri::ad($state))
+                    ->color(fn (?string $state) => match ($state) {
+                        'havale' => 'warning',
+                        'kapida' => 'info',
+                        default => 'gray',
+                    })
+                    ->placeholder('Kart'),
 
                 TextColumn::make('status')
                     ->label('Durum')
@@ -132,6 +145,16 @@ class OrdersTable
                         'partially_refunded' => 'Kısmi iade',
                     ]),
 
+                SelectFilter::make('payment_provider')
+                    ->label('Ödeme yöntemi')
+                    ->options(OdemeYontemleri::ADLAR),
+
+                Filter::make('havale_bekleyen')
+                    ->label('Havale ödemesi bekleyenler')
+                    ->query(fn ($query) => $query->where('payment_provider', 'havale')
+                        ->where('payment_status', 'pending')
+                        ->where('status', 'pending')),
+
                 SelectFilter::make('status')
                     ->label('Sipariş durumu')
                     ->options([
@@ -151,7 +174,8 @@ class OrdersTable
                 Filter::make('takili_rezerv')
                     ->label('Takılı rezervler (2 saatten eski)')
                     ->query(fn ($query) => $query->where('stock_state', 'reserved')
-                        ->where('created_at', '<', now()->subHours(2))),
+                        ->where('created_at', '<', now()->subHours(2))
+                        ->where(fn ($q) => $q->whereNull('payment_provider')->orWhere('payment_provider', '!=', 'havale'))),
             ])
             ->recordActions([
                 /*
@@ -214,11 +238,42 @@ class OrdersTable
                         'Fatura-'.$record->invoice_number.'.pdf',
                     )),
 
+                /*
+                 * Havale: müşteri parayı gönderdi, banka hesabında görüldü.
+                 * Stok düşer, sipariş "Hazırlanıyor"a geçer.
+                 */
+                Action::make('havaleOnay')
+                    ->label('Ödeme alındı')
+                    ->icon('heroicon-o-banknotes')
+                    ->color('success')
+                    ->authorize(fn () => Yetki::yonetici())
+                    ->visible(fn (Order $kayit) => $kayit->payment_provider === 'havale'
+                        && $kayit->payment_status === 'pending')
+                    ->requiresConfirmation()
+                    ->modalHeading(fn (Order $kayit) => 'Havale onayı — '.$kayit->number)
+                    ->modalDescription(fn (Order $kayit) => number_format((float) $kayit->grand_total, 2, ',', '.')
+                        .' TL hesaba geçti mi? Onaylayınca stok düşer ve sipariş hazırlanmaya alınır.'
+                        .($kayit->status === 'cancelled' ? ' Bu sipariş süresi dolduğu için iptal edilmişti; stok yeniden ayrılmaya çalışılacak.' : ''))
+                    ->action(function (Order $record) {
+                        app(CevrimdisiOdeme::class)->havaleOnayla($record, auth()->user()?->email);
+
+                        $record->refresh();
+
+                        Notification::make()
+                            ->title($record->status === 'cancelled'
+                                ? 'Ödeme kaydedildi ama stok yetmedi — sipariş notuna bakın'
+                                : 'Ödeme onaylandı, sipariş hazırlanıyor')
+                            ->color($record->status === 'cancelled' ? 'warning' : 'success')
+                            ->send();
+                    }),
+
                 Action::make('kargola')
                     ->label('Kargoya ver')
                     ->icon('heroicon-o-truck')
                     ->color('info')
-                    ->visible(fn (Order $kayit) => $kayit->payment_status === 'paid'
+                    // Kapıda ödeme ödenmeden kargolanır (ödeme teslimatta alınır)
+                    ->visible(fn (Order $kayit) => ($kayit->payment_status === 'paid'
+                            || ($kayit->payment_provider === 'kapida' && $kayit->payment_status === 'pending'))
                         && in_array($kayit->status, ['paid', 'preparing'], true))
                     ->schema([
                         TextInput::make('kargo_firmasi')
@@ -250,11 +305,12 @@ class OrdersTable
                     ->icon('heroicon-o-check-badge')
                     ->color('success')
                     ->requiresConfirmation()
-                    ->modalDescription(
-                        'Cayma hakkı süresi BU tarihten başlar ('
+                    ->modalDescription(fn (Order $kayit) => 'Cayma hakkı süresi BU tarihten başlar ('
                         .config('shop.cayma_hakki_gun').' gün), '
                         .'bu yüzden gerçekten teslim edildiğinde işaretleyin.'
-                    )
+                        .($kayit->payment_provider === 'kapida' && $kayit->payment_status === 'pending'
+                            ? ' KAPIDA ÖDEME: '.number_format((float) $kayit->grand_total, 2, ',', '.').' TL tahsil edilmiş sayılacak.'
+                            : ''))
                     ->visible(fn (Order $kayit) => $kayit->status === 'shipped')
                     ->action(function (Order $record) {
                         try {
@@ -281,7 +337,10 @@ class OrdersTable
                      * stok dönüyor, para mağazada kalıyordu. Artık iptal ekranında
                      * PayTR iadesi seçilebiliyor (varsayılan açık).
                      */
-                    ->schema(fn (Order $kayit) => $kayit->payment_status === 'paid' && app(PaymentRefunds::class)->kullanilabilir()
+                    // Karta iade yalnız kartla ödenmiş siparişte; havale/kapıda iadesi elden yapılır
+                    ->schema(fn (Order $kayit) => $kayit->payment_status === 'paid'
+                        && in_array($kayit->payment_provider, [null, 'paytr'], true)
+                        && app(PaymentRefunds::class)->kullanilabilir()
                         ? [
                             Toggle::make('para_iade')
                                 ->label(number_format((float) $kayit->grand_total, 2, ',', '.').' TL PayTR ile karta iade edilsin')

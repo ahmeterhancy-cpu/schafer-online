@@ -17,6 +17,8 @@
         {!! nl2br(e($metin['metin'])) !!}
     </p>
 
+    @include('eposta.parca.odeme-talimati', ['order' => $order])
+
     @include('eposta.parca.siparis-tablosu', ['order' => $order])
 
     @include('eposta.parca.siparis-dugmesi', ['order' => $order])

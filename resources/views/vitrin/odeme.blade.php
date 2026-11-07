@@ -189,6 +189,34 @@
                     </div>
                 </div>
             </fieldset>
+
+            {{--
+                Ödeme yöntemi. Özetteki bedel satırı ve düğme metni CSS :has()
+                ile seçime göre değişir; JS gerekmez. Tutar sunucuda yeniden
+                hesaplanır, buradaki gösterim yalnız bilgi içindir.
+            --}}
+            @php($seciliYontem = old('odeme_yontemi', array_key_first($yontemler)))
+            <fieldset class="form-blok odeme-yontemleri">
+                <legend class="etiket">Ödeme Yöntemi</legend>
+
+                @forelse ($yontemler as $anahtar => $y)
+                    <label class="yontem-secenek">
+                        <input type="radio" name="odeme_yontemi" value="{{ $anahtar }}" @checked($seciliYontem === $anahtar) required>
+                        <span class="yontem-govde">
+                            <strong>
+                                {{ $y['ad'] }}
+                                @if ($y['ek_ucret'] > 0)
+                                    <small>+{{ number_format($y['ek_ucret'], 2, ',', '.') }} TL</small>
+                                @endif
+                            </strong>
+                            <span>{{ $y['aciklama'] }}</span>
+                        </span>
+                    </label>
+                @empty
+                    <p class="uyari uyari-hata">Şu anda çevrim içi ödeme alınamıyor. Lütfen bizi arayın: {{ config('shop.satici.telefon') }}</p>
+                @endforelse
+                @error('odeme_yontemi') <span class="alan-hata">{{ $message }}</span> @enderror
+            </fieldset>
         </div>
 
         <aside class="odeme-ozet">
@@ -221,10 +249,24 @@
                 <span>{{ $kargo > 0 ? number_format($kargo, 2, ',', '.') . ' TL' : 'Ücretsiz' }}</span>
             </div>
 
-            <div class="ozet-satir ozet-toplam">
+            @php($kapidaUcret = $yontemler['kapida']['ek_ucret'] ?? 0)
+            @if ($kapidaUcret > 0)
+                <div class="ozet-satir ozet-kapida">
+                    <span>Kapıda ödeme bedeli</span>
+                    <span>{{ number_format($kapidaUcret, 2, ',', '.') }} TL</span>
+                </div>
+            @endif
+
+            <div class="ozet-satir ozet-toplam ozet-toplam-normal">
                 <span>Toplam</span>
                 <span>{{ number_format($toplam, 2, ',', '.') }} TL</span>
             </div>
+            @if ($kapidaUcret > 0)
+                <div class="ozet-satir ozet-toplam ozet-kapida">
+                    <span>Toplam</span>
+                    <span>{{ number_format($toplam + $kapidaUcret, 2, ',', '.') }} TL</span>
+                </div>
+            @endif
 
             <label class="onay-kutu">
                 <input type="checkbox" name="sozlesme_onay" value="1" required>
@@ -244,9 +286,12 @@
                 <p class="ozet-not">Onayladığınız sürüm: {{ $sozlesme->version }}</p>
             @endif
 
-            <button type="submit" class="dugme odeme-dugme">Ödemeye geç</button>
+            <button type="submit" class="dugme odeme-dugme" @disabled($yontemler === [])>
+                <span class="dugme-kart">Ödemeye geç</span>
+                <span class="dugme-siparis">Siparişi tamamla</span>
+            </button>
 
-            <p class="ozet-not">
+            <p class="ozet-not ozet-not-kart">
                 Kart bilgileriniz ödeme kuruluşunun güvenli sayfasında girilir,
                 tarafımızca görülmez ve saklanmaz.
             </p>

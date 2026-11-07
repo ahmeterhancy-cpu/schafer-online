@@ -22,7 +22,7 @@ class EpostaMetniTest extends TestCase
     private function siparis(): Order
     {
         return Order::create([
-            'number' => 'ZEY-260921-0007',
+            'number' => 'SCH-260921-0007',
             'customer_name' => 'Ayşe Yılmaz',
             'customer_email' => 'ayse@example.test',
             'customer_phone' => '5551112233',
@@ -37,7 +37,7 @@ class EpostaMetniTest extends TestCase
     {
         $mail = new OrderPlaced($this->siparis());
 
-        $this->assertSame('Siparişiniz alındı — ZEY-260921-0007', $mail->envelope()->subject);
+        $this->assertSame('Siparişiniz alındı — SCH-260921-0007', $mail->envelope()->subject);
         $mail->assertSeeInHtml('Merhaba Ayşe Yılmaz, siparişinizi aldık');
     }
 
@@ -51,7 +51,7 @@ class EpostaMetniTest extends TestCase
 
         $mail = new OrderShipped($this->siparis());
 
-        $this->assertSame('Ayşe Yılmaz, kargon yolda! (ZEY-260921-0007)', $mail->envelope()->subject);
+        $this->assertSame('Ayşe Yılmaz, kargon yolda! (SCH-260921-0007)', $mail->envelope()->subject);
         $mail->assertSeeInHtml('Aras ile gönderdik: TR777', false);
         // Boş bırakılan başlık varsayılana döner
         $mail->assertSeeInHtml('Siparişiniz yola çıktı');

@@ -28,13 +28,15 @@ class ReleaseStaleReservations extends Command
 
     protected $description = 'Ödemesi yarıda kalan siparişlerin stok rezervini serbest bırakır';
 
-    public function handle(OrderStock $stock): int
+    public function handle(OrderStock $stock, \App\Services\CevrimdisiOdeme $cevrimdisi): int
     {
         $dakika = max(45, (int) $this->option('dakika'));
 
         $siparisler = Order::query()
             ->where('stock_state', 'reserved')
             ->where('payment_status', 'pending')
+            // Havale siparişi günlerce bekleyebilir; onun süresi ayrı (aşağıda)
+            ->where(fn ($q) => $q->whereNull('payment_provider')->orWhere('payment_provider', 'paytr'))
             ->where('created_at', '<', now()->subMinutes($dakika))
             ->with('items')
             ->get();
@@ -52,6 +54,11 @@ class ReleaseStaleReservations extends Command
         }
 
         $this->info($siparisler->count().' siparişin rezervi bırakıldı.');
+
+        $havale = $cevrimdisi->suresiDolanlariIptalEt(\App\Support\OdemeYontemleri::havaleSureGun());
+        if ($havale > 0) {
+            $this->info($havale.' havale siparişi süresi dolduğu için iptal edildi.');
+        }
 
         return self::SUCCESS;
     }

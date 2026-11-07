@@ -38,8 +38,15 @@ class MagazaOzeti extends StatsOverviewWidget
         $bugunAdet = (clone $bugunkuSiparis)->count();
         $bugunCiro = (float) (clone $bugunkuSiparis)->sum('grand_total');
 
-        $kargolanacak = Order::where('payment_status', 'paid')
-            ->whereIn('status', ['paid', 'preparing'])
+        // Kapıda ödeme siparişi ödenmeden kargolanır, o da sayılır
+        $kargolanacak = Order::whereIn('status', ['paid', 'preparing'])
+            ->where(fn ($q) => $q->where('payment_status', 'paid')
+                ->orWhere(fn ($k) => $k->where('payment_provider', 'kapida')->where('payment_status', 'pending')))
+            ->count();
+
+        $havaleBekleyen = Order::where('payment_provider', 'havale')
+            ->where('payment_status', 'pending')
+            ->where('status', 'pending')
             ->count();
 
         $acikIade = ReturnRequest::whereNotIn('status', ['completed', 'rejected', 'cancelled'])->count();
@@ -55,6 +62,8 @@ class MagazaOzeti extends StatsOverviewWidget
          */
         $takiliRezerv = Order::where('stock_state', 'reserved')
             ->where('created_at', '<', now()->subHours(2))
+            // Havale siparişi ödeme süresi boyunca bilerek stok tutar
+            ->where(fn ($q) => $q->whereNull('payment_provider')->orWhere('payment_provider', '!=', 'havale'))
             ->count();
 
         return [
@@ -65,9 +74,14 @@ class MagazaOzeti extends StatsOverviewWidget
                 ->url(OrderResource::getUrl('index')),
 
             Stat::make('Kargolanacak', (string) $kargolanacak)
-                ->description($kargolanacak > 0 ? 'Ödemesi alınmış, kargo bekliyor' : 'Bekleyen yok')
+                ->description($kargolanacak > 0 ? 'Ödemesi alınmış ya da kapıda ödemeli, kargo bekliyor' : 'Bekleyen yok')
                 ->color($kargolanacak > 0 ? 'warning' : 'success')
                 ->url(OrderResource::getUrl('index', ['tableFilters' => ['status' => ['value' => 'paid']]])),
+
+            Stat::make('Havale bekleyen', (string) $havaleBekleyen)
+                ->description($havaleBekleyen > 0 ? 'Hesaba geçince "Ödeme alındı" deyin' : 'Bekleyen yok')
+                ->color($havaleBekleyen > 0 ? 'warning' : 'success')
+                ->url(OrderResource::getUrl('index', ['tableFilters' => ['havale_bekleyen' => ['isActive' => true]]])),
 
             Stat::make('Açık iade / değişim', (string) $acikIade)
                 ->description($acikIade > 0 ? 'Sonuçlanmamış talep' : 'Bekleyen yok')

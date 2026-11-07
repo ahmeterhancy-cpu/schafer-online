@@ -63,7 +63,12 @@ class OrderPayments
 
         $order->forceFill([
             'payment_status' => 'paid',
-            'status' => 'paid',
+            /*
+             * Yalnız bekleyen sipariş "ödendi"ye geçer. Kapıda ödemede ödeme
+             * teslimatta onaylanır — sipariş o anda "teslim edildi"dir ve
+             * geri "ödendi"ye çekilmemeli.
+             */
+            'status' => $order->status === 'pending' ? 'paid' : $order->status,
             'paid_at' => now(),
             'payment_meta' => array_merge($order->payment_meta ?? [], $meta),
         ])->save();
@@ -78,6 +83,11 @@ class OrderPayments
          *
          * Gönderim hatası burayı düşürmez (bkz. Notifier).
          */
+        // Havale/kapıda: onay e-postası sipariş anında gitti (bkz. CevrimdisiOdeme)
+        if (! empty($order->payment_meta['onay_epostasi'])) {
+            return;
+        }
+
         $this->notifier->orderPlaced($order->fresh('items'));
         $this->notifier->contractDocuments($order->fresh('items'));
     }

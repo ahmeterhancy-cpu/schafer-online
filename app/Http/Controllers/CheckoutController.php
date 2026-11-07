@@ -6,9 +6,11 @@ use App\Models\Address;
 use App\Models\LegalDocument;
 use App\Models\Order;
 use App\Services\Cart;
+use App\Services\CevrimdisiOdeme;
 use App\Services\Checkout;
 use App\Services\OrderStock;
 use App\Services\Payments\PayTrGateway;
+use App\Support\OdemeYontemleri;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\URL;
 use RuntimeException;
@@ -38,6 +40,7 @@ class CheckoutController extends Controller
             'indirim' => $cart->discount(),
             'kargo' => $cart->shipping(),
             'toplam' => $cart->total(),
+            'yontemler' => OdemeYontemleri::etkinler(),
             'sozlesme' => LegalDocument::current('mesafeli-satis'),
             'onBilgi' => LegalDocument::current('on-bilgilendirme'),
         ]);
@@ -45,6 +48,11 @@ class CheckoutController extends Controller
 
     public function store(Request $request, Cart $cart, Checkout $checkout, PayTrGateway $paytr, OrderStock $stock)
     {
+        // Yöntem gönderilmediyse ilk açık yöntem (formda da ilki seçili gelir)
+        if (! $request->filled('odeme_yontemi')) {
+            $request->merge(['odeme_yontemi' => array_key_first(OdemeYontemleri::etkinler())]);
+        }
+
         $veri = $request->validate([
             'ad' => ['required', 'string', 'max:120'],
             'eposta' => ['required', 'email', 'max:190'],
@@ -75,10 +83,14 @@ class CheckoutController extends Controller
             'fatura_ilce' => ['required_if:farkli_fatura_adresi,1', 'nullable', 'string', 'max:80'],
             'fatura_il' => ['required_if:farkli_fatura_adresi,1', 'nullable', 'string', 'max:80'],
 
+            'odeme_yontemi' => ['required', \Illuminate\Validation\Rule::in(array_keys(OdemeYontemleri::etkinler()))],
+
             // Tüketici mevzuatı: ön bilgilendirme onayı olmadan sipariş alınamaz
             'sozlesme_onay' => ['accepted'],
         ], [
             'sozlesme_onay.accepted' => 'Siparişi tamamlamak için sözleşmeleri onaylamanız gerekir.',
+            'odeme_yontemi.required' => 'Bir ödeme yöntemi seçin.',
+            'odeme_yontemi.in' => 'Seçilen ödeme yöntemi şu anda kullanılamıyor.',
             'firma_unvani.required_if' => 'Kurumsal faturada firma unvanı zorunlu.',
             'vergi_dairesi.required_if' => 'Kurumsal faturada vergi dairesi zorunlu.',
             'vkn.required_if' => 'Kurumsal faturada vergi numarası zorunlu.',
@@ -156,12 +168,25 @@ class CheckoutController extends Controller
                 contractVersion: $sozlesme?->version,
                 preinfoVersion: $onBilgi?->version,
                 ip: $request->ip(),
+                paymentMethod: $veri['odeme_yontemi'],
+                // Bedel sunucuda hesaplanır, formdan gelmez
+                paymentFee: OdemeYontemleri::ekUcret($veri['odeme_yontemi']),
             );
         } catch (RuntimeException $e) {
             return back()->withInput()->with('hata', $e->getMessage());
         }
 
         $cart->clear();
+
+        if (OdemeYontemleri::cevrimdisi($order->payment_provider)) {
+            app(CevrimdisiOdeme::class)->baslat($order);
+
+            return redirect()
+                ->to(URL::signedRoute('order.show', ['order' => $order->number]))
+                ->with('bilgi', $order->payment_provider === 'havale'
+                    ? 'Siparişiniz alındı. Aşağıdaki hesaba havale/EFT yaptığınızda siparişiniz hazırlanacak.'
+                    : 'Siparişiniz alındı. Ödemeyi ürünü teslim alırken yapacaksınız.');
+        }
 
         return $this->odemeyeDevret($order, $paytr, $stock);
     }

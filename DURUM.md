@@ -1,6 +1,6 @@
 # Schafer Kıbrıs — Durum
 
-Son güncelleme: 2026-11-07 · **395 test** geçiyor
+Son güncelleme: 2026-11-07 · **406 test** geçiyor
 
 schaferkibris.com (WooCommerce + Basel teması) yerine yönetim panelli yeni
 online mağaza. Laravel 13 + Filament 5, Blade, sıfır çalışma zamanı kütüphanesi.
@@ -62,6 +62,26 @@ Bilerek farklı olanlar:
   kopyaydı, taşınmadı; yerine Schafer'e özgü Hakkımızda / Üyelik / Alışveriş /
   Teslimat / Güvenli Alışveriş sayfaları yazıldı (panelden düzenlenebilir).
 
+## Ödeme yöntemleri
+
+Kasada üç yöntem; her biri Site Ayarları → "Ödeme yöntemleri"nden açılıp
+kapatılır (`App\Support\OdemeYontemleri`, anahtar = `orders.payment_provider`).
+
+| Yöntem | Sipariş anında | Sonra |
+|---|---|---|
+| Kart (`paytr`) | stok rezerve, PayTR sayfası | ödeme bildirimi → ödendi, stok düşer, e-posta |
+| Havale (`havale`) | stok rezerve, durum "Ödeme bekleniyor", IBAN'lı e-posta + sipariş sayfası | panelde **"Ödeme alındı"** → ödendi, stok düşer. N gün (varsayılan 3) içinde onaylanmazsa `schafer:rezerv-temizle` iptal eder |
+| Kapıda (`kapida`) | stok DÜŞER, durum "Hazırlanıyor", e-posta | ödenmeden kargolanır; **"Teslim edildi"** = tahsil edildi (ödendi) |
+
+- Havale, panele en az bir hesap ("Banka | Hesap sahibi | IBAN") girilmeden
+  kasada görünmez. **Gerçek IBAN henüz girilmedi.**
+- Kapıda ödeme bedeli (`orders.payment_fee`) tanımlanabilir, varsayılan 0;
+  toplama dahil, sipariş özetinde ve e-postada ayrı satır.
+- PayTR iadesi yalnız kartla ödenmiş siparişte; havale/kapıdada "Elle iade ettim".
+- Kartın 90 dk "takılı rezerv" kuralı havaleye dokunmaz; panodaki "Takılı rezerv"
+  havaleyi saymaz, ayrı "Havale bekleyen" kartı var.
+- Sipariş numarası öneki `SCH-` (Zeys'ten kalan `ZEY-` düzeltildi).
+
 ## Düzeltilen hatalar (devralınan altyapıda)
 
 - Seçeneksiz ürün panelde kaydedilince tek varyantı siliniyordu (ürün
@@ -72,8 +92,8 @@ Bilerek farklı olanlar:
 
 ## Bekleyenler (müşteriden)
 
-1. **Ödeme kuruluşu**: altyapı PayTR (test modunda benzetimle çalışıyor).
-   KKTC'de hangi sanal POS kullanılacak? Havale/EFT veya kapıda ödeme istenecek mi?
+1. **Ödeme**: PayTR anahtarları (kart; şu an test benzetimi) ve havale için
+   banka hesap(lar)ı / IBAN. Kapıda ödeme bedeli alınacak mı?
 2. Firma unvanı, vergi no (yasal metinler ve fatura).
 3. Teslimat ücreti ve ücretsiz teslimat eşiği (şu an 150 TL / 2.500 TL varsayım).
 4. Slayt için lifestyle fotoğraflar, Instagram hesabı.

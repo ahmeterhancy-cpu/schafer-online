@@ -48,6 +48,13 @@ class Setting extends Model
         'satici_vergi_dairesi' => 'shop.satici.vergi_dairesi',
         'satici_vergi_no' => 'shop.satici.vergi_no',
         'bakim_modu' => 'shop.bakim_modu',
+        'odeme_kart' => 'shop.odeme.kart',
+        'odeme_havale' => 'shop.odeme.havale',
+        'odeme_kapida' => 'shop.odeme.kapida',
+        'havale_hesaplari' => 'shop.odeme.havale_hesaplari',
+        'havale_sure_gun' => 'shop.odeme.havale_sure_gun',
+        'kapida_ek_ucret' => 'shop.odeme.kapida_ek_ucret',
+        'kapida_aciklama' => 'shop.odeme.kapida_aciklama',
     ];
 
     /** Sayısal olması gereken ayarlar — config'e doğru türde girsin. */
@@ -56,6 +63,11 @@ class Setting extends Model
         'kargo_ucretsiz_esigi' => 'float',
         'dusuk_stok_esigi' => 'int',
         'bakim_modu' => 'bool',
+        'odeme_kart' => 'bool',
+        'odeme_havale' => 'bool',
+        'odeme_kapida' => 'bool',
+        'havale_sure_gun' => 'int',
+        'kapida_ek_ucret' => 'float',
     ];
 
     /** @return array<string, string|null> */

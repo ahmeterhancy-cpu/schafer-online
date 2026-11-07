@@ -49,6 +49,22 @@
         </td>
     </tr>
 
+    @if ((float) $order->payment_fee > 0)
+        <tr>
+            <td colspan="2" style="padding:4px 0; color:#554f44;">{{ \App\Support\OdemeYontemleri::ad($order->payment_provider) }} bedeli</td>
+            <td align="right" style="padding:4px 0; color:#554f44; white-space:nowrap;">
+                {{ number_format((float) $order->payment_fee, 2, ',', '.') }} TL
+            </td>
+        </tr>
+    @endif
+
+    <tr>
+        <td colspan="2" style="padding:4px 0; color:#554f44;">Ödeme yöntemi</td>
+        <td align="right" style="padding:4px 0; color:#554f44; white-space:nowrap;">
+            {{ \App\Support\OdemeYontemleri::ad($order->payment_provider) }}
+        </td>
+    </tr>
+
     <tr>
         <td colspan="2" style="padding:13px 0 0; border-top:1px solid #cdc2ad; color:#1c1a15; font-weight:bold;">
             Toplam

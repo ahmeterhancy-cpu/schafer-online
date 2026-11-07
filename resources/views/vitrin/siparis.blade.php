@@ -44,6 +44,8 @@
         <p class="uyari uyari-hata">{{ session('hata') }}</p>
     @endif
 
+    @include('vitrin.parca.odeme-talimati', ['order' => $order])
+
     @if ($order->tracking_number)
         <div class="kargo-kutu">
             <span class="etiket">Kargo</span>
@@ -106,6 +108,16 @@
                         ? number_format((float) $order->shipping_total, 2, ',', '.') . ' TL'
                         : 'Ücretsiz' }}
                 </span>
+            </div>
+            @if ((float) $order->payment_fee > 0)
+                <div class="ozet-satir">
+                    <span>{{ \App\Support\OdemeYontemleri::ad($order->payment_provider) }} bedeli</span>
+                    <span>{{ number_format((float) $order->payment_fee, 2, ',', '.') }} TL</span>
+                </div>
+            @endif
+            <div class="ozet-satir">
+                <span>Ödeme yöntemi</span>
+                <span>{{ \App\Support\OdemeYontemleri::ad($order->payment_provider) }}</span>
             </div>
             <div class="ozet-satir ozet-toplam">
                 <span>Toplam</span>

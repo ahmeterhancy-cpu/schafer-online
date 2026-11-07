@@ -92,7 +92,7 @@ class PanelTest extends TestCase
     public function test_siparis_listesi_acilir(): void
     {
         Order::create([
-            'number' => 'ZEY-260921-0001',
+            'number' => 'SCH-260921-0001',
             'customer_name' => 'Ayşe Yılmaz',
             'customer_email' => 'ayse@example.test',
             'customer_phone' => '5551112233',
@@ -103,7 +103,7 @@ class PanelTest extends TestCase
         $this->actingAs($this->yonetici)
             ->get('/admin/orders')
             ->assertOk()
-            ->assertSee('ZEY-260921-0001')
+            ->assertSee('SCH-260921-0001')
             ->assertSee('Ayşe Yılmaz');
     }
 
