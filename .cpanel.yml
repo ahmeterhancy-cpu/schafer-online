@@ -80,6 +80,9 @@ deployment:
     # deploy'un onbellege alinmis ayarlariyla calisir (eski veritabani adi,
     # eski motor ayari) ve degisiklikleriniz yok sayilir.
     - cd $APPPATH && $PHPBIN artisan optimize:clear >> $LOG 2>&1 || true
+    # Ilk kurulum verisi = /home/scha5572/ilk-veri.sql VARSA yuklenir (siparis varsa komut reddeder),
+    # sonra dosya yeniden adlandirilir. Dosya yoksa hicbir sey yapmaz.
+    - cd $APPPATH && $PHPBIN artisan schafer:veri-yukle /home/scha5572/ilk-veri.sql >> $LOG 2>&1 || echo "VERI YUKLEME REDDEDILDI ya da HATA" >> $LOG 2>&1
     - cd $APPPATH && $PHPBIN -d display_errors=1 -d error_reporting=-1 artisan migrate --force >> $LOG 2>&1 || echo "MIGRATE ATLANDI - .env ve vendor var mi?" >> $LOG 2>&1
     - cd $APPPATH && $PHPBIN artisan optimize >> $LOG 2>&1 || true
     - cd $APPPATH && $PHPBIN artisan filament:optimize >> $LOG 2>&1 || true
