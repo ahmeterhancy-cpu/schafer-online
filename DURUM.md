@@ -121,7 +121,7 @@ kapatılır (`App\Support\OdemeYontemleri`, anahtar = `orders.payment_provider`)
 1. **Ödeme**: PayTR anahtarları (kart; şu an test benzetimi) ve havale için
    banka hesap(lar)ı / IBAN. Kapıda ödeme bedeli alınacak mı?
 2. Firma unvanı, vergi no (yasal metinler ve fatura).
-3. Teslimat ücreti ve ücretsiz teslimat eşiği (şu an 150 TL / 2.500 TL varsayım).
+3. ~~Teslimat ücreti / eşiği~~ — KARARLAŞTI (2026-11-08): 250 TL, 2.500 TL üzeri ücretsiz.
 4. Slayt için lifestyle fotoğraflar, Instagram hesabı.
 5. Yasal metinlerin KKTC'de bir hukukçuya okutulması.
 6. Hosting / alan adı taşıma planı (DEPLOY.md cPanel tarifi geçerli).

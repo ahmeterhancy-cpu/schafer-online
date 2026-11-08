@@ -35,7 +35,7 @@ return [
      * karisimi sessiz 100 kat hatalara yol acar.
      */
     'kargo' => [
-        'ucret' => (float) env('SHOP_KARGO_UCRET', 150.00),
+        'ucret' => (float) env('SHOP_KARGO_UCRET', 250.00),
         'ucretsiz_esigi' => (float) env('SHOP_KARGO_UCRETSIZ_ESIGI', 2500.00),
         'firma' => env('SHOP_KARGO_FIRMA', ''),
     ],

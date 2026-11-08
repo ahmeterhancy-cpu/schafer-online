@@ -268,10 +268,9 @@
                         <tr><th scope="row">Bakım</th><td>{{ $urun->care_notes }}</td></tr>
                     @endif
                     <tr>
-                        <th scope="row">Kargo ve iade</th>
+                        <th scope="row">Kargo</th>
                         <td>
                             {{ number_format((float) config('shop.kargo.ucretsiz_esigi'), 0, ',', '.') }} TL üzeri kargo ücretsiz.
-                            Teslimden sonra {{ config('shop.cayma_hakki_gun') }} gün iade hakkınız var.
                         </td>
                     </tr>
                 </tbody>
