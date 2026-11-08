@@ -19,6 +19,8 @@ use App\Http\Controllers\RobotsController;
 use App\Http\Controllers\SitemapController;
 use App\Http\Controllers\StockInquiryController;
 use App\Http\Controllers\XmlBeslemeController;
+use App\Http\Controllers\YapimController;
+use App\Http\Middleware\SatisKapali;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', HomeController::class)->name('home');
@@ -26,6 +28,9 @@ Route::get('/', HomeController::class)->name('home');
 Route::get('/sitemap.xml', SitemapController::class)->name('sitemap');
 Route::get('/robots.txt', RobotsController::class)->name('robots');
 Route::get('/xml/urunler.xml', XmlBeslemeController::class)->name('xml.urunler');
+
+// Yapım aşaması perdesinde PIN ile önizleme (perde bu adresi geçirir)
+Route::post('/onizleme-pin', YapimController::class)->middleware('throttle:5,1')->name('yapim.pin');
 
 Route::get('/koleksiyonlar', [CollectionController::class, 'index'])->name('collections.index');
 Route::get('/koleksiyon/{slug}', [CollectionController::class, 'show'])->name('collections.show');
@@ -46,12 +51,15 @@ Route::permanentRedirect('/guvenli-alisveris', '/sayfa/guvenli-alisveris');
 Route::permanentRedirect('/uyelik', '/sayfa/uyelik');
 Route::permanentRedirect('/alisveris', '/sayfa/alisveris');
 
-Route::get('/sepet', [CartController::class, 'index'])->name('cart.index');
-Route::post('/sepet/ekle', [CartController::class, 'add'])->name('cart.add');
-Route::post('/sepet/guncelle', [CartController::class, 'update'])->name('cart.update');
-Route::post('/sepet/cikar', [CartController::class, 'remove'])->name('cart.remove');
-Route::post('/sepet/kupon', [CartController::class, 'applyCoupon'])->name('cart.coupon');
-Route::post('/sepet/kupon-sil', [CartController::class, 'forgetCoupon'])->name('cart.coupon.forget');
+// Fiyatlar gizliyken (Site Ayarları) sepet ve ödeme kapalı — bkz. SatisKapali
+Route::middleware(SatisKapali::class)->group(function () {
+    Route::get('/sepet', [CartController::class, 'index'])->name('cart.index');
+    Route::post('/sepet/ekle', [CartController::class, 'add'])->name('cart.add');
+    Route::post('/sepet/guncelle', [CartController::class, 'update'])->name('cart.update');
+    Route::post('/sepet/cikar', [CartController::class, 'remove'])->name('cart.remove');
+    Route::post('/sepet/kupon', [CartController::class, 'applyCoupon'])->name('cart.coupon');
+    Route::post('/sepet/kupon-sil', [CartController::class, 'forgetCoupon'])->name('cart.coupon.forget');
+});
 
 /*
  * Misafir siparis sorgulama.
@@ -77,8 +85,10 @@ Route::post('/stok-haber-ver', [StockInquiryController::class, 'store'])->name('
 Route::get('/iletisim', [PageController::class, 'contact'])->name('contact');
 Route::get('/sayfa/{slug}', [PageController::class, 'legal'])->name('legal');
 
-Route::get('/odeme', [CheckoutController::class, 'form'])->name('checkout.form');
-Route::post('/odeme', [CheckoutController::class, 'store'])->name('checkout.store');
+Route::middleware(SatisKapali::class)->group(function () {
+    Route::get('/odeme', [CheckoutController::class, 'form'])->name('checkout.form');
+    Route::post('/odeme', [CheckoutController::class, 'store'])->name('checkout.store');
+});
 
 /*
  * Yerel benzetim. Denetleyici ayrica kendi icinde ortam ve yapilandirma

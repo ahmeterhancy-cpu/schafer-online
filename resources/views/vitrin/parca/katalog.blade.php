@@ -65,6 +65,7 @@
                 </section>
             @endif
 
+            @fiyatgorunur
             <section class="yan-blok">
                 <h2>Fiyat</h2>
                 <form method="GET" class="fiyat-suzgec">
@@ -93,6 +94,7 @@
                     @endif
                 </form>
             </section>
+            @endfiyatgorunur
         </details>
     </aside>
 
@@ -131,7 +133,7 @@
                     @endforeach
                     <label for="sirala">Sırala</label>
                     <select id="sirala" name="sirala" data-otomatik-gonder>
-                        @foreach (\App\Support\Katalog::SIRALAR as $anahtar => $etiket)
+                        @foreach (\App\Support\Katalog::siralar() as $anahtar => $etiket)
                             <option value="{{ $anahtar }}" @selected($sira === $anahtar)>{{ $etiket }}</option>
                         @endforeach
                     </select>

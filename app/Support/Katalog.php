@@ -30,10 +30,19 @@ class Katalog
      * @param  T  $q  sorgu ya da ilişki (koleksiyonun ürünleri)
      * @return T
      */
+    /** Ekranda sunulan sıralamalar — fiyatlar gizliyken fiyata dayalılar çıkar. */
+    public static function siralar(): array
+    {
+        return Fiyat::gorunur()
+            ? self::SIRALAR
+            : array_diff_key(self::SIRALAR, array_flip(['fiyat-artan', 'fiyat-azalan', 'indirim']));
+    }
+
     public static function uygula(Builder|Relation $q, Request $request): Builder|Relation
     {
-        $min = self::sayi($request->query('fiyat_min'));
-        $max = self::sayi($request->query('fiyat_max'));
+        // Fiyatlar gizliyken adres satırına yazılan fiyat süzgeci de yok sayılır
+        $min = Fiyat::gorunur() ? self::sayi($request->query('fiyat_min')) : null;
+        $max = Fiyat::gorunur() ? self::sayi($request->query('fiyat_max')) : null;
 
         if ($min !== null) {
             $q->where('min_price', '>=', $min);
@@ -64,7 +73,7 @@ class Katalog
     {
         $sira = (string) $request->query('sirala', 'onerilen');
 
-        return array_key_exists($sira, self::SIRALAR) ? $sira : 'onerilen';
+        return array_key_exists($sira, self::siralar()) ? $sira : 'onerilen';
     }
 
     private static function sayi(mixed $deger): ?float

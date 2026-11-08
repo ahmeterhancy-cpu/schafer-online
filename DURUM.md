@@ -129,6 +129,16 @@ kapatılır (`App\Support\OdemeYontemleri`, anahtar = `orders.payment_provider`)
   `storage/app/private/xml/son-aktarim.json`. Komut: `php artisan schafer:xml-ice-aktar [--kuru] [--kaynak=]`.
 - Otomatik çalışma için cron (`schedule:run`) şart — bkz. DEPLOY.md.
 
+## Yapım aşaması ve fiyatları gizle (2026-11-08)
+
+- **Yapım aşaması** (Site Ayarları): eski "bakım perdesi" (`shop.bakim_modu`, `App\Http\Middleware\BakimPerdesi`).
+  Başlık/metin panelden; isteğe bağlı PIN — doğru PIN'i giren cihaza 30 günlük imzalı çerez (`sch_onizleme`),
+  PIN değişince eski çerezler düşer. Yönetici her zaman siteyi görür.
+- **Fiyatları gizle** (Site Ayarları): `App\Support\Fiyat::gorunur()` ve Blade `@fiyatgorunur`. Gizliyken
+  fiyat/indirim/sepet/kargo eşiği/fiyat süzgeci ve sıralaması yok, kartta ve ürün sayfasında "Fiyat sor" (WhatsApp);
+  sepet+ödeme `SatisKapali` ile kapalı, XML beslemesi 404, JSON-LD'de teklif yok. "Üyelere göster" açıksa
+  giriş yapan müşteri görür; panel kullanıcısı her zaman görür.
+
 ## Bekleyenler (müşteriden)
 
 1. **Ödeme**: PayTR anahtarları (kart; şu an test benzetimi) ve havale için

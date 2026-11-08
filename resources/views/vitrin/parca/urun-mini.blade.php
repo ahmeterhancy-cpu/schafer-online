@@ -12,11 +12,13 @@
         @if ($urun->review_count > 0)
             <span class="yildiz" aria-label="{{ number_format((float) $urun->rating, 1, ',', '') }} / 5">{{ str_repeat('★', (int) round((float) $urun->rating)) }}<span class="yildiz-bos">{{ str_repeat('★', 5 - (int) round((float) $urun->rating)) }}</span></span>
         @endif
+        @fiyatgorunur
         <span class="urun-fiyat">
             <strong>{{ number_format((float) $urun->min_price, 2, ',', '.') }} TL</strong>
             @if ($urun->kart_eski_fiyat)
                 <del>{{ number_format($urun->kart_eski_fiyat, 2, ',', '.') }} TL</del>
             @endif
         </span>
+        @endfiyatgorunur
     </span>
 </a>

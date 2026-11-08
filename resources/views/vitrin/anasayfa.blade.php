@@ -101,6 +101,7 @@
                                 @else
                                     <h2 class="hero-baslik">{{ \App\Support\Metin::baslik($u->name) }}</h2>
                                 @endif
+                                @fiyatgorunur
                                 <p class="hero-fiyat">
                                     @if ($u->kart_eski_fiyat)
                                         <del>{{ number_format($u->kart_eski_fiyat, 2, ',', '.') }} ₺</del>
@@ -110,13 +111,14 @@
                                         <span class="hero-rozet">-%{{ $u->indirim_orani }}</span>
                                     @endif
                                 </p>
+                                @endfiyatgorunur
                                 <div class="hero-dugmeler">
                                     <a class="dugme" href="{{ url('/urun/' . $u->slug) }}" @unless ($loop->first) tabindex="-1" @endunless>Ürünü incele</a>
                                     <a class="hero-bag" href="{{ route('catalog.category', $s['kategori']->slug) }}" @unless ($loop->first) tabindex="-1" @endunless>
                                         Tüm {{ $s['kategori']->name }} @include('vitrin.parca.ikon', ['ad' => 'ok-sag'])
                                     </a>
                                 </div>
-                                @if ($esik > 0 && $loop->first)
+                                @if ($esik > 0 && $loop->first && \App\Support\Fiyat::gorunur())
                                     <p class="hero-not">{{ number_format($esik, 0, ',', '.') }} TL üzeri siparişlerde teslimat ücretsiz</p>
                                 @endif
                             </div>

@@ -1194,6 +1194,23 @@
 .bakim p { max-width: 46ch; margin: 0 0 14px; }
 .bakim address { font-style: normal; font-size: 14px; color: var(--ink-faint); margin-bottom: 14px; }
 .bakim a { color: var(--vurgu); }
+.bakim-etiket {
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--vurgu);
+    margin: 0 0 8px !important;
+}
+.bakim-iletisim { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; margin: 8px 0 18px; }
+/* Kırmızı zemin düğmede yazı her zaman beyaz */
+.bakim-iletisim .dugme:not(.dugme-cizgi) { color: #ffffff; }
+.bakim-iletisim .dugme-cizgi { color: var(--ink); }
+.bakim-pin { margin-top: 18px; font-size: 13px; }
+.bakim-pin summary { cursor: pointer; color: var(--ink-faint); }
+.bakim-pin form { display: flex; gap: 8px; justify-content: center; margin-top: 12px; }
+.bakim-pin .metin-girdi { width: 140px; text-align: center; letter-spacing: 0.2em; }
+.bakim-pin-hata { color: var(--danger); margin-top: 8px !important; }
 
 .bakim-seridi {
     background: var(--danger);
@@ -1391,3 +1408,14 @@
 .urun-panel-eski { margin-right: 10px; color: var(--ink-faint); font-size: 0.7em; font-weight: 400; }
 .urun-panel-indirimli { color: var(--vurgu); }
 .urun-panel-rozet { margin-left: 10px; font-size: 12px; vertical-align: middle; border-radius: var(--radius-hap); }
+
+/* ================================================================== */
+/* Fiyatları gizle modülü                                              */
+/* ================================================================== */
+
+.urun-fiyat-gizli { font-size: 13px; color: var(--ink-soft); font-weight: 500; }
+.urun-panel-fiyat.urun-fiyat-gizli { font-size: 16px; color: var(--ink); }
+.fiyat-sor { display: flex; flex-wrap: wrap; gap: 10px; margin: 18px 0; }
+.fiyat-sor .dugme { flex: 1 1 180px; text-align: center; }
+/* Kırmızı zemin düğmede yazı her zaman beyaz */
+.fiyat-sor .dugme:not(.dugme-cizgi) { color: #ffffff; }

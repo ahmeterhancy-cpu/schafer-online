@@ -28,8 +28,16 @@
     {{-- Perde açıkken siteyi gören tek kişi yönetici: unutulmasın diye uyarı --}}
     @if (config('shop.bakim_modu') && auth()->user()?->panelde())
         <div class="bakim-seridi">
-            Bakım perdesi AÇIK — ziyaretçiler "Çok yakında" sayfasını görüyor.
+            Yapım aşaması AÇIK — ziyaretçiler "yapım aşamasında" sayfasını görüyor.
             <a href="{{ url('/admin/site-ayarlari') }}">Ayarlardan kapat</a>
+        </div>
+    @elseif (config('shop.bakim_modu') && \App\Http\Middleware\BakimPerdesi::onizlemede(request()))
+        <div class="bakim-seridi">Önizleme — site henüz ziyaretçilere kapalı.</div>
+    @endif
+    @if (config('shop.fiyat.gizle') && auth()->user()?->panelde())
+        <div class="bakim-seridi">
+            Fiyatlar GİZLİ — ziyaretçiler fiyat ve sepet görmüyor (siz yönetici olarak görüyorsunuz).
+            <a href="{{ url('/admin/site-ayarlari') }}">Ayarlar</a>
         </div>
     @endif
 
@@ -45,7 +53,7 @@
                         </a>
                     </li>
                 @endif
-                @if ((float) config('shop.kargo.ucretsiz_esigi') > 0)
+                @if ((float) config('shop.kargo.ucretsiz_esigi') > 0 && \App\Support\Fiyat::gorunur())
                     <li class="ust-serit-duyuru">
                         {{ number_format((float) config('shop.kargo.ucretsiz_esigi'), 0, ',', '.') }} TL üzeri ücretsiz teslimat
                     </li>
@@ -124,13 +132,15 @@
                     </a>
                 @endauth
 
-                <a href="{{ url('/sepet') }}" class="baslik-ikon sepet-bag" aria-label="Sepet, {{ $sepetAdedi }} ürün">
-                    <span class="baslik-ikon-kutu">
-                        @include('vitrin.parca.ikon', ['ad' => 'sepet'])
-                        <span class="sepet-sayi">{{ $sepetAdedi }}</span>
-                    </span>
-                    <span class="baslik-ikon-metin sepet-tutar">{{ number_format($sepetTutari, 2, ',', '.') }} ₺</span>
-                </a>
+                @fiyatgorunur
+                    <a href="{{ url('/sepet') }}" class="baslik-ikon sepet-bag" aria-label="Sepet, {{ $sepetAdedi }} ürün">
+                        <span class="baslik-ikon-kutu">
+                            @include('vitrin.parca.ikon', ['ad' => 'sepet'])
+                            <span class="sepet-sayi">{{ $sepetAdedi }}</span>
+                        </span>
+                        <span class="baslik-ikon-metin sepet-tutar">{{ number_format($sepetTutari, 2, ',', '.') }} ₺</span>
+                    </a>
+                @endfiyatgorunur
             </div>
         </div>
 
@@ -181,7 +191,7 @@
         <div class="kap guven-serit-ic">
             <div>
                 @include('vitrin.parca.ikon', ['ad' => 'kamyon'])
-                <span><strong>Hızlı Teslimat</strong>{{ (float) config('shop.kargo.ucretsiz_esigi') > 0 ? number_format((float) config('shop.kargo.ucretsiz_esigi'), 0, ',', '.') . ' TL üzeri ücretsiz' : 'KKTC geneline' }}</span>
+                <span><strong>Hızlı Teslimat</strong>{{ (float) config('shop.kargo.ucretsiz_esigi') > 0 && \App\Support\Fiyat::gorunur() ? number_format((float) config('shop.kargo.ucretsiz_esigi'), 0, ',', '.') . ' TL üzeri ücretsiz' : 'KKTC geneline' }}</span>
             </div>
             <div>
                 @include('vitrin.parca.ikon', ['ad' => 'kalkan'])
@@ -276,13 +286,17 @@
     <nav class="mobil-alt" aria-label="Hızlı erişim">
         <a href="{{ url('/koleksiyonlar') }}">@include('vitrin.parca.ikon', ['ad' => 'magaza'])<span>Mağaza</span></a>
         <a href="{{ route('catalog.search') }}">@include('vitrin.parca.ikon', ['ad' => 'arama'])<span>Ara</span></a>
-        <a href="{{ url('/sepet') }}">
-            <span class="baslik-ikon-kutu">
-                @include('vitrin.parca.ikon', ['ad' => 'sepet'])
-                <span class="sepet-sayi">{{ $sepetAdedi }}</span>
-            </span>
-            <span>Sepet</span>
-        </a>
+        @fiyatgorunur
+            <a href="{{ url('/sepet') }}">
+                <span class="baslik-ikon-kutu">
+                    @include('vitrin.parca.ikon', ['ad' => 'sepet'])
+                    <span class="sepet-sayi">{{ $sepetAdedi }}</span>
+                </span>
+                <span>Sepet</span>
+            </a>
+        @else
+            <a href="{{ route('contact') }}">@include('vitrin.parca.ikon', ['ad' => 'telefon'])<span>İletişim</span></a>
+        @endfiyatgorunur
         <a href="{{ route('account.index') }}">@include('vitrin.parca.ikon', ['ad' => 'kullanici'])<span>Hesap</span></a>
     </nav>
 

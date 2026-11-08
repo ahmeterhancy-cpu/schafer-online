@@ -32,6 +32,11 @@
             'offers' => $teklifler,
         ];
 
+        // Fiyatlar gizliyken arama motoruna da fiyat verilmez
+        if (\App\Support\Fiyat::gizli()) {
+            unset($jsonLd['offers']);
+        }
+
         if ($urun->hero_image) {
             $jsonLd['image'] = asset('storage/'.$urun->hero_image);
         }

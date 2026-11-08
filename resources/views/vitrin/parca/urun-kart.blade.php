@@ -23,7 +23,7 @@
         </a>
 
         <div class="urun-rozetler">
-            @if ($urun->indirim_orani)
+            @if ($urun->indirim_orani && \App\Support\Fiyat::gorunur())
                 <span class="rozet rozet-indirim">-%{{ $urun->indirim_orani }}</span>
             @endif
             @if ($urun->badge)
@@ -45,6 +45,7 @@
             </p>
         @endif
 
+        @fiyatgorunur
         <p class="urun-fiyat">
             @if ($urun->kart_eski_fiyat)
                 <del>{{ number_format($urun->kart_eski_fiyat, 2, ',', '.') }} ₺</del>
@@ -57,6 +58,9 @@
                 @endif
             </strong>
         </p>
+        @else
+        <p class="urun-fiyat urun-fiyat-gizli">{{ \App\Support\Fiyat::metin() }}</p>
+        @endfiyatgorunur
 
         @if ($urun->renkler->isNotEmpty())
             <div class="urun-renkler" aria-label="Renkler: {{ $urun->renkler->pluck('value')->implode(', ') }}">
@@ -67,7 +71,10 @@
             </div>
         @endif
 
-        @if ($urun->total_stock < 1)
+        @if (\App\Support\Fiyat::gizli())
+            <a href="{{ \App\Support\Fiyat::sorBaglantisi($urun->name, $urunAdresi) }}" class="urun-sepet" target="_blank" rel="noopener"
+               aria-label="{{ $urun->name }} — fiyat sor">Fiyat sor</a>
+        @elseif ($urun->total_stock < 1)
             <a href="{{ $urunAdresi }}" class="urun-sepet" aria-label="{{ $urun->name }} — stoğa girince haber ver">Gelince haber ver</a>
         @elseif ($tek)
             <form method="POST" action="{{ route('cart.add') }}" class="urun-sepet-form">

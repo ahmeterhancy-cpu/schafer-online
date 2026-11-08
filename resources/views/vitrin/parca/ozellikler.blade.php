@@ -1,11 +1,11 @@
 {{-- Özellik şeridi — referanstaki dört kutu; yalnız doğru olan vaatler --}}
-@php $esik = (float) config('shop.kargo.ucretsiz_esigi'); @endphp
+@php $esik = \App\Support\Fiyat::gorunur() ? (float) config('shop.kargo.ucretsiz_esigi') : 0; @endphp
 <section class="kap bolum">
     <ul class="ozellikler">
         <li>
             @include('vitrin.parca.ikon', ['ad' => 'kamyon'])
             <div>
-                <h3>{{ $esik > 0 ? 'Ücretsiz Kargo' : 'Türkiye Geneli Kargo' }}</h3>
+                <h3>{{ $esik > 0 ? 'Ücretsiz Kargo' : 'KKTC Geneli Teslimat' }}</h3>
                 <p>{{ $esik > 0 ? number_format($esik, 0, ',', '.') . ' TL ve üzeri siparişlerde' : 'KKTC geneline' }}</p>
             </div>
         </li>

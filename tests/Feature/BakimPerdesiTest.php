@@ -17,7 +17,7 @@ class BakimPerdesiTest extends TestCase
     {
         config(['shop.bakim_modu' => false]);
 
-        $this->get('/')->assertOk()->assertDontSee('Çok yakında', false);
+        $this->get('/')->assertOk()->assertDontSee('yapım aşamasında', false);
     }
 
     public function test_perde_acikken_ziyaretci_503_gorur(): void
@@ -27,7 +27,7 @@ class BakimPerdesiTest extends TestCase
         $this->get('/')
             ->assertStatus(503)
             ->assertHeader('Retry-After', '3600')
-            ->assertSee('Çok yakında', false);
+            ->assertSee('yapım aşamasında', false);
 
         $this->get('/koleksiyonlar')->assertStatus(503);
         $this->get('/sepet')->assertStatus(503);
@@ -41,7 +41,7 @@ class BakimPerdesiTest extends TestCase
 
         $this->actingAs($yonetici)->get('/')
             ->assertOk()
-            ->assertSee('Bakım perdesi AÇIK', false);
+            ->assertSee('Yapım aşaması AÇIK', false);
     }
 
     public function test_perde_acikken_musteri_hesabi_da_perdeyi_gorur(): void

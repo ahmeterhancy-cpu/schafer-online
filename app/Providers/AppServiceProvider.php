@@ -33,6 +33,9 @@ class AppServiceProvider extends ServiceProvider
          */
         Setting::configeBindir();
 
+        // "Fiyatları gizle" modülü: @fiyatgorunur ... @else ... @endfiyatgorunur
+        \Illuminate\Support\Facades\Blade::if('fiyatgorunur', fn () => \App\Support\Fiyat::gorunur());
+
         /*
          * Sepet adedi basligin her sayfada gorunuyor.
          *

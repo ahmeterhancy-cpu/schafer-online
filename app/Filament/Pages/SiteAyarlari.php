@@ -58,14 +58,49 @@ class SiteAyarlari extends Page
         return $schema
             ->statePath('data')
             ->components([
-                Section::make('Yayın durumu')
+                Section::make('Yapım aşaması')
+                    ->description('Açıkken ziyaretçiler sitenin yerine "yapım aşamasında" sayfasını görür. Siz yönetici olarak siteyi normal görmeye devam edersiniz. Ödeme bildirimleri etkilenmez.')
+                    ->columns(2)
                     ->schema([
                         Toggle::make('bakim_modu')
-                            ->label('Bakım perdesi açık')
-                            ->helperText(
-                                'Açıkken ziyaretçiler "Çok yakında" sayfasını görür. Siz yönetici olarak '
-                                .'siteyi normal görmeye devam edersiniz. Ödeme bildirimleri etkilenmez.'
-                            ),
+                            ->label('"Yapım aşamasında" sayfasını göster')
+                            ->live()
+                            ->columnSpanFull(),
+                        TextInput::make('yapim_pin')
+                            ->label('Önizleme PIN kodu')
+                            ->password()
+                            ->revealable()
+                            ->regex('/^\d{4,12}$/')
+                            ->validationMessages(['regex' => '4–12 haneli, yalnız rakam olmalı.'])
+                            ->helperText('İsteğe bağlı. Girerseniz sayfada "Önizleme kodu" çıkar; bu PIN\'i giren cihaz siteyi normal görür (müşteriye, ekibe göstermek için). Değiştirince eski izinler düşer.'),
+                        TextInput::make('yapim_baslik')
+                            ->label('Başlık')
+                            ->placeholder('Sitemiz yapım aşamasında')
+                            ->maxLength(120),
+                        Textarea::make('yapim_metin')
+                            ->label('Metin')
+                            ->rows(2)
+                            ->maxLength(400)
+                            ->placeholder('Yeni online mağazamızı hazırlıyoruz, çok yakında yayındayız…')
+                            ->helperText('Boş bırakılırsa varsayılan metin gösterilir. Telefon, WhatsApp, adres ve Instagram aşağıdaki satıcı bilgilerinden otomatik eklenir.')
+                            ->columnSpanFull(),
+                    ]),
+
+                Section::make('Fiyatları gizle')
+                    ->description('Açıkken vitrinde fiyat, indirim ve sepet görünmez; ürünlerde "Fiyat sor" (WhatsApp) düğmesi çıkar. Sepet ve ödeme kapanır, ürün XML beslemesi durur. Siz yönetici olarak fiyatları görmeye devam edersiniz.')
+                    ->columns(2)
+                    ->schema([
+                        Toggle::make('fiyat_gizle')
+                            ->label('Fiyatları gizle')
+                            ->live()
+                            ->columnSpanFull(),
+                        Toggle::make('fiyat_uyelere_goster')
+                            ->label('Üye girişi yapanlara göster')
+                            ->helperText('Açıksa giriş yapmış müşteriler fiyatları görür ve alışveriş yapabilir.'),
+                        TextInput::make('fiyat_metin')
+                            ->label('Fiyat yerine yazılacak metin')
+                            ->placeholder('Fiyat bilgisi için bize ulaşın')
+                            ->maxLength(80),
                     ]),
 
                 Section::make('Kargo')

@@ -53,14 +53,16 @@ class ProductController extends Controller
          * amaçlıdır — sepete eklerken fiyat yeniden sunucuda okunur,
          * istemciden gelen tutara asla güvenilmez.
          */
+        // Fiyatlar gizliyken sayfa kaynağına (JSON) da fiyat yazılmaz
+        $fiyatGorunur = \App\Support\Fiyat::gorunur();
         $varyantlar = $urun->variants
             ->where('is_active', true)
             ->map(fn ($v) => [
                 'id' => $v->id,
                 'degerler' => $v->optionValues->pluck('id')->values()->all(),
                 'stok' => $v->available_stock,
-                'fiyat' => (float) $v->price,
-                'eski' => $v->compare_at_price !== null && (float) $v->compare_at_price > (float) $v->price ? (float) $v->compare_at_price : null,
+                'fiyat' => $fiyatGorunur ? (float) $v->price : null,
+                'eski' => $fiyatGorunur && $v->compare_at_price !== null && (float) $v->compare_at_price > (float) $v->price ? (float) $v->compare_at_price : null,
                 'sku' => $v->sku,
                 // Varyanta özel görsel: seçilince ana görsel olur (bkz. urun.js)
                 'gorsel' => $v->image,

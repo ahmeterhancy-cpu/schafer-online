@@ -65,6 +65,26 @@ return [
     'cayma_hakki_gun' => 14,
 
     /*
+     * Yapim asamasi perdesi (bakim_modu acikken). PIN girilen cihaz siteyi
+     * normal gorur; baslik/metin bos ise varsayilanlar kullanilir.
+     */
+    'yapim' => [
+        'pin' => env('SHOP_YAPIM_PIN', ''),
+        'baslik' => '',
+        'metin' => '',
+    ],
+
+    /*
+     * Fiyatlari gizle. Acikken vitrinde fiyat, indirim ve sepet gorunmez;
+     * yerine "fiyat sor" (WhatsApp) cikar. Sepet ve odeme kapanir.
+     */
+    'fiyat' => [
+        'gizle' => (bool) env('SHOP_FIYAT_GIZLE', false),
+        'uyelere_goster' => false,
+        'metin' => 'Fiyat bilgisi için bize ulaşın',
+    ],
+
+    /*
      * XML.
      *  - disa: /xml/urunler.xml (Google Merchant / Meta katalog / fiyat
      *    karsilastirma siteleri ayni bicimi okur).

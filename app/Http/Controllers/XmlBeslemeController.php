@@ -17,7 +17,8 @@ class XmlBeslemeController extends Controller
 
     public function __invoke(UrunBeslemesi $besleme): Response
     {
-        abort_unless(config('shop.xml.disa_acik'), 404);
+        // Fiyatlar gizliyken besleme de kapalı: Google/Meta fiyatsız ürün kabul etmez
+        abort_unless(config('shop.xml.disa_acik') && ! config('shop.fiyat.gizle'), 404);
 
         $xml = Cache::remember(self::ONBELLEK, now()->addMinutes(30), fn () => $besleme->uret());
 

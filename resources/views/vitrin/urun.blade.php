@@ -113,6 +113,7 @@
                 @endif
             </div>
 
+            @fiyatgorunur
             <p class="urun-panel-fiyat" id="secim-fiyat">
                 @if ($urun->has_price_range)
                     {{ number_format((float) $urun->min_price, 2, ',', '.') }} –
@@ -128,6 +129,9 @@
                     @endif
                 @endif
             </p>
+            @else
+            <p class="urun-panel-fiyat urun-fiyat-gizli">{{ \App\Support\Fiyat::metin() }}</p>
+            @endfiyatgorunur
 
             @if ($urun->short_description)
                 <p class="urun-panel-ozet">{{ $urun->short_description }}</p>
@@ -137,6 +141,17 @@
                 <p class="uyari uyari-hata">{{ session('hata') }}</p>
             @endif
 
+            @if (\App\Support\Fiyat::gizli())
+                {{-- Fiyatlar gizli: satış yok, fiyat WhatsApp/telefonla sorulur --}}
+                <div class="fiyat-sor">
+                    <a class="dugme sepete-dugme" href="{{ \App\Support\Fiyat::sorBaglantisi($urun->name, url('/urun/' . $urun->slug)) }}" target="_blank" rel="noopener">
+                        Fiyat sor
+                    </a>
+                    @if (config('shop.satici.telefon'))
+                        <a class="dugme dugme-cizgi" href="tel:{{ preg_replace('/[^0-9+]/', '', config('shop.satici.telefon')) }}">Bizi arayın</a>
+                    @endif
+                </div>
+            @else
             <form method="POST" action="{{ route('cart.add') }}" id="sepet-formu">
                 @csrf
                 <input type="hidden" name="variant_id" id="variant-id" value="">
@@ -184,6 +199,7 @@
                     </button>
                 </div>
             </form>
+            @endif
 
             {{--
                 "Stokta yok — haber ver".
@@ -224,15 +240,17 @@
                 @endif
             </ul>
 
+            @fiyatgorunur
             <ul class="urun-guvence">
                 <li>@include('vitrin.parca.ikon', ['ad' => 'kamyon'])
                     @if ((float) config('shop.kargo.ucretsiz_esigi') > 0)
                         {{ number_format((float) config('shop.kargo.ucretsiz_esigi'), 0, ',', '.') }} TL üzeri kargo ücretsiz
                     @else
-                        Türkiye geneli kargo
+                        KKTC geneline teslimat
                     @endif
                 </li>
             </ul>
+            @endfiyatgorunur
         </div>
     </div>
 
@@ -267,12 +285,14 @@
                     @if ($urun->care_notes)
                         <tr><th scope="row">Bakım</th><td>{{ $urun->care_notes }}</td></tr>
                     @endif
+                    @fiyatgorunur
                     <tr>
                         <th scope="row">Kargo</th>
                         <td>
                             {{ number_format((float) config('shop.kargo.ucretsiz_esigi'), 0, ',', '.') }} TL üzeri kargo ücretsiz.
                         </td>
                     </tr>
+                    @endfiyatgorunur
                 </tbody>
             </table>
         </div>
