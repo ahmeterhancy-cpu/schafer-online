@@ -29,7 +29,7 @@ class EpostaMetni
             'konu' => 'Siparişiniz alındı — {siparis_no}',
             'baslik' => 'Siparişiniz alındı',
             'metin' => 'Merhaba {ad}, siparişinizi aldık ve hazırlamaya başlıyoruz. Kargoya verildiğinde takip numarasını size ayrıca ileteceğiz.',
-            'not' => 'Ürünü teslim aldıktan sonra {cayma_gun} gün içinde iade ya da değişim hakkınız var. Dilerseniz ürünü başka bir renk ya da modelle değiştirebilirsiniz.',
+            'not' => 'Sorunuz olursa bu e-postayı yanıtlayarak bize ulaşabilirsiniz.',
         ],
         'siparis-kargoda' => [
             'ad' => 'Sipariş kargoya verildi',
