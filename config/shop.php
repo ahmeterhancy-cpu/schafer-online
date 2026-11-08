@@ -65,6 +65,16 @@ return [
     'cayma_hakki_gun' => 14,
 
     /*
+     * Canlida ilk kurulum (schafer:ilk-kurulum). Adresler bossa ilgili adim atlanir.
+     */
+    'kurulum' => [
+        'gorsel_url' => env('KURULUM_GORSEL_URL', ''),
+        'veri_url' => env('KURULUM_VERI_URL', ''),
+        // Uretilen yonetici parolasinin yazildigi dosya (web'e kapali ana dizin)
+        'giris_dosyasi' => env('KURULUM_GIRIS_DOSYASI', dirname(base_path()).'/yonetici-giris.txt'),
+    ],
+
+    /*
      * Yapim asamasi perdesi (bakim_modu acikken). PIN girilen cihaz siteyi
      * normal gorur; baslik/metin bos ise varsayilanlar kullanilir.
      */
