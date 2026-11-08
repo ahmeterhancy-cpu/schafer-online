@@ -1,0 +1,83 @@
+{
+  "_fonts-DbTj-U6G.css": {
+    "file": "assets/fonts-DbTj-U6G.css",
+    "src": "_fonts-DbTj-U6G.css"
+  },
+  "_lato-400-normal-B11PyLys.woff": {
+    "file": "assets/lato-400-normal-B11PyLys.woff",
+    "src": "_lato-400-normal-B11PyLys.woff"
+  },
+  "_lato-400-normal-BEhtfm5r.woff2": {
+    "file": "assets/lato-400-normal-BEhtfm5r.woff2",
+    "src": "_lato-400-normal-BEhtfm5r.woff2"
+  },
+  "_lato-700-normal-BUGMgin4.woff2": {
+    "file": "assets/lato-700-normal-BUGMgin4.woff2",
+    "src": "_lato-700-normal-BUGMgin4.woff2"
+  },
+  "_lato-700-normal-DAdL7O4w.woff": {
+    "file": "assets/lato-700-normal-DAdL7O4w.woff",
+    "src": "_lato-700-normal-DAdL7O4w.woff"
+  },
+  "_lato-900-normal-C3uaq3BA.woff2": {
+    "file": "assets/lato-900-normal-C3uaq3BA.woff2",
+    "src": "_lato-900-normal-C3uaq3BA.woff2"
+  },
+  "_lato-900-normal-CZBfLiEO.woff": {
+    "file": "assets/lato-900-normal-CZBfLiEO.woff",
+    "src": "_lato-900-normal-CZBfLiEO.woff"
+  },
+  "_poppins-400-normal-BOb3E3N0.woff": {
+    "file": "assets/poppins-400-normal-BOb3E3N0.woff",
+    "src": "_poppins-400-normal-BOb3E3N0.woff"
+  },
+  "_poppins-400-normal-cpxAROuN.woff2": {
+    "file": "assets/poppins-400-normal-cpxAROuN.woff2",
+    "src": "_poppins-400-normal-cpxAROuN.woff2"
+  },
+  "_poppins-500-normal-C8OXljZJ.woff2": {
+    "file": "assets/poppins-500-normal-C8OXljZJ.woff2",
+    "src": "_poppins-500-normal-C8OXljZJ.woff2"
+  },
+  "_poppins-500-normal-DGXqpDMm.woff": {
+    "file": "assets/poppins-500-normal-DGXqpDMm.woff",
+    "src": "_poppins-500-normal-DGXqpDMm.woff"
+  },
+  "_poppins-600-normal-BJdTmd5m.woff": {
+    "file": "assets/poppins-600-normal-BJdTmd5m.woff",
+    "src": "_poppins-600-normal-BJdTmd5m.woff"
+  },
+  "_poppins-600-normal-zEkxB9Mr.woff2": {
+    "file": "assets/poppins-600-normal-zEkxB9Mr.woff2",
+    "src": "_poppins-600-normal-zEkxB9Mr.woff2"
+  },
+  "_poppins-700-normal-BVuQR_eA.woff": {
+    "file": "assets/poppins-700-normal-BVuQR_eA.woff",
+    "src": "_poppins-700-normal-BVuQR_eA.woff"
+  },
+  "_poppins-700-normal-Qrb0O0WB.woff2": {
+    "file": "assets/poppins-700-normal-Qrb0O0WB.woff2",
+    "src": "_poppins-700-normal-Qrb0O0WB.woff2"
+  },
+  "resources/css/app.css": {
+    "file": "assets/app-CnAtKvDp.css",
+    "name": "app",
+    "names": [
+      "app.css"
+    ],
+    "src": "resources/css/app.css",
+    "isEntry": true
+  },
+  "resources/js/app.js": {
+    "file": "assets/app-BXsv7M7s.js",
+    "name": "app",
+    "src": "resources/js/app.js",
+    "isEntry": true
+  },
+  "resources/js/urun.js": {
+    "file": "assets/urun-CLgF_40C.js",
+    "name": "urun",
+    "src": "resources/js/urun.js",
+    "isEntry": true
+  }
+}

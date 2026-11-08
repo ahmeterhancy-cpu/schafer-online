@@ -3,20 +3,13 @@
 /*
  * public_html/index.php — cPanel yerlesimi icin giris dosyasi.
  *
- * Bu dosya YALNIZCA alan adinin kok dizini degistirilemiyorsa gerekir.
- * O durumda Laravel'in tamami public_html/zeys_app/ altinda durur, web
- * kokunde yalniz public/ icerigi ve bu dosya bulunur.
+ * Ana alan adinin kok dizini (public_html) cPanel'de degistirilemiyor.
+ * Laravel'in tamami web'e KAPALI olan /home/KULLANICI/schafer_app/
+ * klasorunde durur; web kokunde yalniz public/ icerigi ve bu dosya bulunur.
  *
- * Kok dizin degistirilebiliyorsa bu dosyaya HIC GEREK YOK: kok dizini
- * dogrudan uygulamanin public/ klasorune yoneltin, Laravel'in kendi
- * public/index.php dosyasi calisir. O yol hem daha temiz hem daha
- * guvenli — asagidaki .htaccess hilesine bagimli kalmazsiniz.
- *
- * zeys_app/.htaccess klasoru webe tamamen kapatir (deploy her seferinde
- * yeniden koyar). O dosya olmazsa .env disaridan okunabilir.
- *
- * Laravel'in kendi public/index.php dosyasi oldugu gibi duruyor;
- * yerel gelistirme onu kullanmaya devam ediyor.
+ * .cpanel.yml her deploy'da bu dosyayi public_html/index.php olarak kopyalar.
+ * Laravel'in kendi public/index.php dosyasi oldugu gibi duruyor; yerel
+ * gelistirme onu kullanmaya devam ediyor.
  */
 
 use Illuminate\Foundation\Application;
@@ -24,7 +17,8 @@ use Illuminate\Http\Request;
 
 define('LARAVEL_START', microtime(true));
 
-$app_base = __DIR__.'/zeys_app';
+// public_html'in bir ustu = ana dizin; uygulama onun altinda
+$app_base = dirname(__DIR__).'/schafer_app';
 
 // Bakim kipi (php artisan down) — Laravel'in kendi perdesi
 if (file_exists($maintenance = $app_base.'/storage/framework/maintenance.php')) {

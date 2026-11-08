@@ -1,21 +1,17 @@
 ---
 # cPanel -> Git Version Control -> Manage -> "Deploy HEAD Commit" bunu calistirir.
-# Klonlamak dosyalari public_html'e KOYMAZ; tasiyan adim budur.
+# Klonlamak dosyalari yerine KOYMAZ; tasiyan adim budur.
 #
-# HESAP: cPanel kullanicisi zeys9011, ana dizin /home2/zeys9011
-# (DIKKAT: /home degil /home2 — Turhost srvc197.trwww.com).
+# HESAP: cPanel kullanicisi scha5572, ana dizin /home/scha5572 (Turhost,
+# LiteSpeed + CloudLinux). Hesabin PHP surumu 8.3 (PHP Selector).
 #
-# YERLESIM: alan adinin kok dizini DEGISTIRILEMIYORSA her sey public_html
-# icinde olmak zorunda. Uygulama public_html/zeys_app/ altina, Laravel'in
-# public/ icerigi dogrudan public_html'e gidiyor.
-# zeys_app/.htaccess klasoru webe kapatir — o dosya olmazsa .env indirilir.
+# YERLESIM: ana alan adinin kok dizini public_html ve DEGISTIRILEMIYOR.
+# Uygulama web'e KAPALI olan /home/scha5572/schafer_app/ altinda durur;
+# Laravel'in public/ icerigi ve deploy/cpanel/index.php public_html'e kopyalanir.
+# public_html/Eski = eski WordPress (web'e kapali .htaccess ile) — DOKUNULMAZ.
 #
-# Kok dizin DEGISTIRILEBILIYORSA bu dosyanin 4. ve 5. adimlarina gerek yok;
-# kok dizini dogrudan zeys_app/public klasorune yoneltin. Bkz. DEPLOY.md.
-#
-# GUNLUK: her adim deploy-son.log dosyasina yazar. Deploy takilirsa onu
-# Dosya Yoneticisi'nden acip nerede durduguna bakin; cPanel'in kendi
-# gunlugunu aramaya gerek yok.
+# GUNLUK: her adim /home/scha5572/deploy-son.log dosyasina yazar. Deploy
+# takilirsa onu Dosya Yoneticisi'nden acip nerede durduguna bakin.
 #
 # Kopyalama /bin/cp ile ve dizinler TEK TEK sayilarak yapiliyor: rsync bu
 # sunucularda cogu zaman yok, tar da cPanel'in dar PATH'inde bulunamiyor.
@@ -31,16 +27,15 @@
 # Bu yuzden asagidaki echo metinlerinde ":" yerine "=" var.
 #
 # Veritabani sifirlama gorevi BILEREK YOK: canlida gercek siparis verisi
-# olacak, tek bir yanlis satir her seyi silebilir. Sifirlama gerekirse
-# phpMyAdmin'den elle yapilir.
+# var, tek bir yanlis satir her seyi silebilir.
 #
 # Ayrintili anlatim ve sorun giderme = DEPLOY.md
 deployment:
   tasks:
-    - export WEBROOT=/home2/zeys9011/public_html
-    - export APPPATH=/home2/zeys9011/public_html/zeys_app
-    - export LOG=/home2/zeys9011/deploy-son.log
-    - export PHPBIN=$(command -v php || echo /opt/cpanel/ea-php83/root/usr/bin/php)
+    - export WEBROOT=/home/scha5572/public_html
+    - export APPPATH=/home/scha5572/schafer_app
+    - export LOG=/home/scha5572/deploy-son.log
+    - export PHPBIN=$(command -v php || echo /opt/alt/php83/usr/bin/php)
     - date > $LOG 2>&1
     - echo "PHPBIN=$PHPBIN" >> $LOG 2>&1
     - echo "APPPATH=$APPPATH WEBROOT=$WEBROOT" >> $LOG 2>&1

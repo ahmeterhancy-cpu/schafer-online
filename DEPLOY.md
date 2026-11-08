@@ -83,7 +83,7 @@ public_html/
 cPanel → **Git Version Control** → Create.
 
 - Clone a Repository: **açık**
-- Clone URL: `https://github.com/ahmeterhancy-cpu/schafer.git`
+- Clone URL: `https://github.com/ahmeterhancy-cpu/schafer-online.git`
 - Repository Path: `repositories/schafer`
 - Repository Name: `schafer`
 
