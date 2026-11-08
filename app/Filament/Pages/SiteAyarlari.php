@@ -192,6 +192,7 @@ class SiteAyarlari extends Page
                         TextInput::make('satici_vergi_dairesi')->label('Vergi dairesi'),
                         TextInput::make('satici_vergi_no')->label('Vergi no'),
                         TextInput::make('instagram')->label('Instagram kullanıcı adı')->prefix('@'),
+                        TextInput::make('facebook')->label('Facebook sayfası')->prefix('facebook.com/')->placeholder('schaferKibris'),
                     ]),
             ]);
     }

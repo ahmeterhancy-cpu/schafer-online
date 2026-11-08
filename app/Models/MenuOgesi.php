@@ -38,6 +38,7 @@ class MenuOgesi extends Model
         return match ($konum) {
             // Kategoriler menüde kendiliğinden çizilir; buradakiler onların ardına eklenir.
             'ana' => [
+                $b('Evlilik Paketi', '/kategori/ceyiz-setleri'),
                 $b('Kampanyalar', '/koleksiyonlar?sirala=indirim'),
                 $b('İletişim', '/iletisim'),
             ],

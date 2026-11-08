@@ -40,6 +40,7 @@ class Setting extends Model
         'dusuk_stok_esigi' => 'shop.dusuk_stok_esigi',
         'siparis_bildirim_epostasi' => 'shop.siparis_bildirim_epostasi',
         'instagram' => 'shop.sosyal.instagram',
+        'facebook' => 'shop.sosyal.facebook',
         'satici_unvan' => 'shop.satici.unvan',
         'satici_adres' => 'shop.satici.adres',
         'satici_telefon' => 'shop.satici.telefon',

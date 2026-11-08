@@ -263,6 +263,9 @@
                         @if (config('shop.sosyal.instagram'))
                             <li>@include('vitrin.parca.ikon', ['ad' => 'instagram']) <a href="https://instagram.com/{{ config('shop.sosyal.instagram') }}" rel="noopener noreferrer" target="_blank">&#64;{{ config('shop.sosyal.instagram') }}</a></li>
                         @endif
+                        @if (config('shop.sosyal.facebook'))
+                            <li>@include('vitrin.parca.ikon', ['ad' => 'facebook']) <a href="https://www.facebook.com/{{ config('shop.sosyal.facebook') }}" rel="noopener noreferrer" target="_blank">Facebook</a></li>
+                        @endif
                     </ul>
                 </div>
             </div>

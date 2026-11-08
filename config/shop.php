@@ -131,6 +131,7 @@ return [
     // Sosyal
     'sosyal' => [
         'instagram' => env('SHOP_INSTAGRAM', ''),
+        'facebook' => env('SHOP_FACEBOOK', ''),
     ],
 
     // Satici bilgileri — yasal metinlerde ve faturada gorunur
