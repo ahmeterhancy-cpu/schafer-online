@@ -81,4 +81,18 @@ class IlkKurulumTest extends TestCase
         $this->artisan('schafer:ilk-kurulum')->assertFailed();
         $this->assertSame(0, DB::table('products')->count());
     }
+
+    public function test_sunucuya_elle_yuklenmis_dosyalari_kullanir(): void
+    {
+        file_put_contents($this->kok.'/elle.zip', $this->zip());
+        file_put_contents($this->kok.'/elle.sql', "INSERT INTO products (name, slug, is_active, created_at, updated_at) VALUES ('Tava', 'tava', 1, '2026-01-01', '2026-01-01');");
+        config(['shop.kurulum.gorsel_url' => $this->kok.'/elle.zip', 'shop.kurulum.veri_url' => $this->kok.'/elle.sql']);
+        Http::fake();
+
+        $this->artisan('schafer:ilk-kurulum')->assertSuccessful();
+
+        Http::assertNothingSent();
+        $this->assertFileExists($this->kok.'/app/public/urunler/tencere-1.webp');
+        $this->assertSame('Tava', Product::value('name'));
+    }
 }

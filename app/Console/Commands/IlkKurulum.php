@@ -71,6 +71,20 @@ class IlkKurulum extends Command
     private function indir(string $url, string $dosya): bool
     {
         @mkdir(dirname($dosya), 0775, true);
+
+        // Sunucuya elle yüklenmiş dosya (Dosya Yöneticisi) — indirme yok
+        if (! preg_match('#^https?://#i', $url)) {
+            if (! is_file($url)) {
+                $this->error('DOSYA YOK = '.$url);
+
+                return false;
+            }
+            copy($url, $dosya);
+            $this->line('Yerel dosya kullanıldı = '.basename($url));
+
+            return true;
+        }
+
         try {
             $yanit = Http::timeout(600)->withOptions(['sink' => $dosya])->get($url);
         } catch (Throwable $e) {
