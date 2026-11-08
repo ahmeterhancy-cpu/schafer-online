@@ -1,12 +1,24 @@
 # Schafer Kıbrıs — cPanel Deploy
 
-Siteyi Turhost/cPanel üzerinde yayına alma tarifi.
-Referans: Ay Parçası (`ayparcasicicekci.com`) aynı yöntemle canlıda.
-
-> ✅ **25 Eylül 2026'da çalıştırıldı, site canlıda.**
-> Sunucu `srvc197.trwww.com` (Turhost), kullanıcı `<cpanel-kullanici>`, ana dizin
-> **`/home2/<cpanel-kullanici>`** (`/home` değil). Kurulumda çıkan dört yeni tuzak
-> 6. bölümde L, M, N ve O olarak yazıldı.
+> ✅ **8 Kasım 2026'da canlıya alındı: https://schaferkibris.com**
+> Turhost (LiteSpeed + CloudLinux), cPanel kullanıcısı `scha5572`, ana dizin `/home/scha5572`.
+> - Uygulama: `/home/scha5572/schafer_app` (web'e kapalı), `.env` orada.
+> - Web kökü: `public_html` (değiştirilemiyor) — `deploy/cpanel/index.php` + `public/` içeriği kopyalanır.
+> - Eski WordPress: `public_html/Eski` (web'e kapalı `.htaccess`), eski veritabanı `scha5572_schafer`.
+> - Veritabanı: `scha5572_yeni` (kullanıcı `scha5572_yeni`).
+> - Depo: https://github.com/ahmeterhancy-cpu/schafer-online (public), cPanel klonu `~/repositories/schafer-online`.
+> - PHP: hesap 8.3 (PHP Selector). Alan adına özel sürüm yöneticice kapalı. `proc_open` kapalı.
+>
+> **Güncelleme:** push → cPanel Git → Manage → Pull or Deploy → "Update from Remote" → "Deploy HEAD Commit".
+> Günlük: `/home/scha5572/deploy-son.log`.
+>
+> Kurulumda çıkan tuzaklar (S–V):
+> - **S.** Sunucudaki depo klasöründe tek dosya değişirse (örn. `.env.example`'a parola yazılırsa) cPanel
+>   "The system cannot deploy" der. Depo klasöründe hiçbir dosyaya elle dokunmayın; `.env` yalnız `schafer_app`'te.
+> - **T.** cPanel Fileman `save_file_content` dosyayı CRLF'e çevirir ve son satır sonunu atar; bayt bayt aynı
+>   içerik gerekiyorsa `upload_files` (Blob) kullanın.
+> - **U.** PHP Selector `set extensions` gönderilen listeyle TÜM eklenti setini değiştirir — eksik bırakılan kapanır.
+> - **V.** `sendmail` kullanılamaz (proc_open kapalı); e-posta yerel SMTP (localhost:25) ile denendi.
 
 ---
 
