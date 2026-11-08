@@ -38,7 +38,7 @@ Route::permanentRedirect('/shop', '/koleksiyonlar');
 Route::permanentRedirect('/magaza', '/koleksiyonlar');
 Route::permanentRedirect('/hesabim', '/hesap');
 Route::permanentRedirect('/teslimat-kargo', '/sayfa/teslimat');
-Route::permanentRedirect('/iade-politikasi', '/sayfa/iade-degisim');
+Route::permanentRedirect('/iade-politikasi', '/sayfa/mesafeli-satis');
 Route::permanentRedirect('/gizlilik-sozlesmesi', '/sayfa/kvkk');
 Route::permanentRedirect('/guvenli-alisveris', '/sayfa/guvenli-alisveris');
 Route::permanentRedirect('/uyelik', '/sayfa/uyelik');

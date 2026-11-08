@@ -119,22 +119,6 @@
         </div>
     </div>
 
-    {{-- Sipariş sorularını doğru yere yönlendir --}}
-    <div class="iletisim-yonlendirme">
-        <a class="yonlendirme-kart" href="{{ route('order.lookup.form') }}">
-            <span>Siparişimi sorgula</span>
-            <small>Sipariş numarası ve e-posta ile durumu görün.</small>
-        </a>
-        <a class="yonlendirme-kart" href="{{ url('/sayfa/iade-degisim') }}">
-            <span>İade ve değişim</span>
-            <small>Ürünü nasıl iade edeceğinizi ya da değiştireceğinizi anlatır.</small>
-        </a>
-        <a class="yonlendirme-kart" href="{{ url('/sayfa/mesafeli-satis') }}">
-            <span>Mesafeli satış sözleşmesi</span>
-            <small>Satış koşulları ve cayma hakkı.</small>
-        </a>
-    </div>
-
     @if (config('shop.satici.unvan'))
         <div class="iletisim-satici">
             <h2>Satıcı bilgileri</h2>

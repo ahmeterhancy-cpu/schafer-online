@@ -17,13 +17,6 @@
             </div>
         </li>
         <li>
-            @include('vitrin.parca.ikon', ['ad' => 'iade'])
-            <div>
-                <h3>{{ config('shop.cayma_hakki_gun') }} Gün İade</h3>
-                <p>Teslimden sonra gerekçesiz cayma hakkı</p>
-            </div>
-        </li>
-        <li>
             @include('vitrin.parca.ikon', ['ad' => 'destek'])
             <div>
                 <h3>Mağaza Desteği</h3>

@@ -105,7 +105,7 @@ class AnasayfaTest extends TestCase
             ->assertOk()
             ->assertSee('Mesafeli Satış Sözleşmesi', false)
             ->assertSee('Gizlilik ve Kişisel Veriler', false)
-            ->assertSee('İade Politikası', false)
+            ->assertDontSee('İade Politikası', false)
             ->assertSee('Teslimat', false);
     }
 

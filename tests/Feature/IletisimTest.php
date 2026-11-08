@@ -96,7 +96,7 @@ class IletisimTest extends TestCase
             ->assertSee('0284 000 00 00')
             ->assertSee('info@zeysfashionhouse.com')
             ->assertSee('Pazartesi - Cumartesi 10.00 - 20.00')
-            ->assertSee('Siparişimi sorgula')
-            ->assertSee('İade ve değişim');
+            ->assertDontSee('Siparişimi sorgula')
+            ->assertDontSee('İade ve değişim');
     }
 }

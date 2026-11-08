@@ -34,7 +34,6 @@ class LegalDocumentForm
         return [
             'on-bilgilendirme' => 'Ön Bilgilendirme Formu',
             'mesafeli-satis' => 'Mesafeli Satış Sözleşmesi',
-            'iade-degisim' => 'İade ve Değişim Koşulları',
             'kvkk' => 'KVKK Aydınlatma Metni',
             'cerez' => 'Çerez Politikası',
         ];

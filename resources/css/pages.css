@@ -1309,27 +1309,6 @@
 
 .harita-yok { display: grid; place-items: center; color: var(--ink-soft); padding: 20px; text-align: center; }
 
-.iletisim-yonlendirme {
-    display: grid;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-    gap: 16px;
-    margin-top: 44px;
-}
-
-.yonlendirme-kart {
-    display: grid;
-    gap: 4px;
-    padding: 18px 20px;
-    border: 1px solid var(--line);
-    border-radius: var(--radius);
-    color: var(--ink);
-    transition: border-color 0.2s, transform 0.2s;
-}
-
-.yonlendirme-kart:hover { border-color: var(--vurgu); transform: translateY(-2px); }
-.yonlendirme-kart span { font-weight: 600; }
-.yonlendirme-kart small { color: var(--ink-soft); line-height: 1.5; }
-
 .iletisim-satici {
     margin-top: 40px;
     padding-top: 24px;
@@ -1346,7 +1325,6 @@
 
 @media (max-width: 900px) {
     .iletisim-duzen { grid-template-columns: minmax(0, 1fr); gap: 28px; }
-    .iletisim-yonlendirme { grid-template-columns: minmax(0, 1fr); }
     .harita-cerceve { aspect-ratio: 3 / 2; }
 }
 

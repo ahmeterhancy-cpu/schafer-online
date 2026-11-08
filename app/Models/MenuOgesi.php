@@ -49,7 +49,6 @@ class MenuOgesi extends Model
                 $b('Üyelik', '/sayfa/uyelik'),
                 $b('Alışveriş', '/sayfa/alisveris'),
                 $b('Teslimat', '/sayfa/teslimat'),
-                $b('İade Politikası', '/sayfa/iade-degisim'),
                 $b('Güvenli Alışveriş', '/sayfa/guvenli-alisveris'),
             ],
             default => [],
@@ -102,7 +101,6 @@ class MenuOgesi extends Model
             'Koleksiyonlar' => \App\Models\Collection::where('is_active', true)->orderBy('position')->pluck('name', 'slug')
                 ->mapWithKeys(fn ($ad, $slug) => ['/koleksiyon/'.$slug => $ad])->all(),
             'Bilgi sayfaları' => [
-                '/sayfa/iade-degisim' => 'İade ve Değişim',
                 '/sayfa/on-bilgilendirme' => 'Ön Bilgilendirme Formu',
                 '/sayfa/mesafeli-satis' => 'Mesafeli Satış Sözleşmesi',
                 '/sayfa/kvkk' => 'KVKK Aydınlatma Metni',

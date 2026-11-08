@@ -55,8 +55,7 @@ class LegalDocumentSeeder extends Seeder
     Unvan: {{satici_unvan}}<br>
     Adres: {{satici_adres}}<br>
     Telefon: {{satici_telefon}}<br>
-    E-posta: {{satici_eposta}}<br>
-    Vergi No: {{satici_mersis}}
+    E-posta: {{satici_eposta}}
 </p>
 
 <h2>2. Sözleşme Konusu Ürün</h2>
@@ -79,10 +78,8 @@ class LegalDocumentSeeder extends Seeder
 
 <h2>4. Cayma Hakkı</h2>
 <p>
-    ALICI, malı teslim aldığı tarihten itibaren {{cayma_gun}} gün içinde
-    hiçbir gerekçe göstermeksizin ve cezai şart ödemeksizin sözleşmeden
-    cayma hakkına sahiptir. Cayma hakkının kullanıldığına dair bildirim
-    bu süre içinde SATICI'ya yöneltilmelidir.
+    ALICI, malı teslim aldıktan sonra hiçbir gerekçe göstermeksizin ve cezai şart ödemeksizin sözleşmeden
+    cayma hakkına sahiptir. Cayma hakkının kullanıldığına dair bildirim SATICI'ya yöneltilmelidir.
 </p>
 
 <h2>5. Cayma Hakkının Kullanılamayacağı Durumlar</h2>
@@ -109,7 +106,7 @@ HTML,
 <h2>Madde 1 — Taraflar</h2>
 <p>
     SATICI: {{satici_unvan}}, {{satici_adres}},
-    {{satici_telefon}}, {{satici_eposta}}, Vergi No: {{satici_mersis}}.<br>
+    {{satici_telefon}}, {{satici_eposta}}.<br>
     ALICI: Sipariş formunda bilgileri yer alan kişi.
 </p>
 
@@ -143,11 +140,10 @@ HTML,
 
 <h2>Madde 5 — Cayma Hakkı</h2>
 <p>
-    ALICI, malı teslim aldığı tarihten itibaren {{cayma_gun}} gün içinde
-    cayma hakkını kullanabilir. Cayma hakkının kullanılması hâlinde ürün,
+    ALICI, malı teslim aldıktan sonra cayma hakkını kullanabilir. Cayma hakkının kullanılması hâlinde ürün,
     faturası ve varsa standart aksesuarlarıyla birlikte eksiksiz ve
     hasarsız olarak iade edilir. Bedel, cayma bildiriminin SATICI'ya
-    ulaşmasından itibaren 14 gün içinde ALICI'ya iade edilir.
+    ulaşmasının ardından ALICI'ya iade edilir.
 </p>
 
 <h2>Madde 6 — Değişim</h2>
@@ -164,39 +160,6 @@ HTML,
 HTML,
             ],
 
-            'iade-degisim' => [
-                'title' => 'İade ve Değişim Koşulları',
-                'body' => <<<'HTML'
-<h2>İade</h2>
-<p>
-    Ürünü teslim aldığınız tarihten itibaren {{cayma_gun}} gün içinde
-    iade talebi oluşturabilirsiniz. Ürünün kullanılmamış olması, kutusu,
-    ambalajı ve aksesuarlarıyla eksiksiz gönderilmesi gerekir.
-</p>
-
-<h2>Değişim</h2>
-<p>
-    Ürünü aynı modelin başka bir rengiyle ya da başka bir ürünle
-    değiştirebilirsiniz. Stokta varsa talep ettiğiniz ürün gönderilir;
-    fiyat farkı varsa ayrıca bildirilir, yoksa iade sürecine dönülür.
-</p>
-
-<h2>Süreç</h2>
-<ol>
-    <li>Hesabınızdaki sipariş sayfasından talep açarsınız.</li>
-    <li>Ürünün teslim alınması için sizinle iletişime geçilir ya da ürünü mağazamıza getirirsiniz.</li>
-    <li>Ürün tarafımıza ulaşır ve incelenir.</li>
-    <li>Talep onaylanır; iadede bedel 14 gün içinde iade edilir.</li>
-</ol>
-
-<h2>İade Edilemeyen Ürünler</h2>
-<p>
-    Gıdayla temas eden ve kullanılmış ürünler ile hijyen gerekçesiyle
-    iç ambalajı açılmış ev tekstili ürünleri (nevresim, havlu, pike vb.)
-    iade alınamaz. Üretim hatalı ürünlerde garanti koşulları geçerlidir.
-</p>
-HTML,
-            ],
 
             'kvkk' => [
                 'title' => 'Kişisel Verilerin Korunması Aydınlatma Metni',

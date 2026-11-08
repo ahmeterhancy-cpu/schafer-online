@@ -99,8 +99,7 @@ class SiparisIslemleri
             ->icon('heroicon-o-check-badge')
             ->color('success')
             ->requiresConfirmation()
-            ->modalDescription(fn (Order $kayit) => 'Cayma hakkı süresi BU tarihten başlar ('
-                .config('shop.cayma_hakki_gun').' gün), '
+            ->modalDescription(fn (Order $kayit) => 'Cayma hakkı süresi BU tarihten başlar, '
                 .'bu yüzden gerçekten teslim edildiğinde işaretleyin.'
                 .($kayit->payment_provider === 'kapida' && $kayit->payment_status === 'pending'
                     ? ' KAPIDA ÖDEME: '.number_format((float) $kayit->grand_total, 2, ',', '.').' TL tahsil edilmiş sayılacak.'

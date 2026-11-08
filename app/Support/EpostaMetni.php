@@ -76,7 +76,7 @@ class EpostaMetni
             'degiskenler' => ['ad', 'talep_no', 'siparis_no', 'tutar', 'magaza'],
             'konu' => 'İade talebiniz onaylandı — {talep_no}',
             'baslik' => 'İade talebiniz onaylandı',
-            'metin' => 'Ürününüz tarafımıza ulaştı ve incelendi. İade tutarı {tutar} TL olarak onaylandı; ödemeyi yaptığınız karta 14 gün içinde iade edilecek. Bankaya göre hesabınıza yansıması birkaç gün sürebilir.',
+            'metin' => 'Ürününüz tarafımıza ulaştı ve incelendi. İade tutarı {tutar} TL olarak onaylandı; ödemeyi yaptığınız karta iade edilecek. Bankaya göre hesabınıza yansıması birkaç gün sürebilir.',
             'not' => '',
         ],
         'degisim-onay' => [
