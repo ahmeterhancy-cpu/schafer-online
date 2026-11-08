@@ -18,12 +18,14 @@ use App\Http\Controllers\ReviewController;
 use App\Http\Controllers\RobotsController;
 use App\Http\Controllers\SitemapController;
 use App\Http\Controllers\StockInquiryController;
+use App\Http\Controllers\XmlBeslemeController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', HomeController::class)->name('home');
 
 Route::get('/sitemap.xml', SitemapController::class)->name('sitemap');
 Route::get('/robots.txt', RobotsController::class)->name('robots');
+Route::get('/xml/urunler.xml', XmlBeslemeController::class)->name('xml.urunler');
 
 Route::get('/koleksiyonlar', [CollectionController::class, 'index'])->name('collections.index');
 Route::get('/koleksiyon/{slug}', [CollectionController::class, 'show'])->name('collections.show');

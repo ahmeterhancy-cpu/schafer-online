@@ -116,6 +116,19 @@ kapatılır (`App\Support\OdemeYontemleri`, anahtar = `orders.payment_provider`)
 - Site Ayarları'ndaki telefon alanı parantezli numarayı reddediyordu; numara
   biçimi `+90 392 223 55 56` yapıldı.
 
+## XML (2026-11-08)
+
+- **Dışa**: `/xml/urunler.xml` — Google Merchant RSS 2.0 (`g:` alanları). Meta katalog,
+  Akakçe/Cimri ve bayiler de okur. Yayındaki her aktif varyant bir `<item>`; indirimdeyse
+  `g:price` = eski fiyat, `g:sale_price` = satış fiyatı; stok bitince `out_of_stock`.
+  30 dk önbellek; panelden kapatılabilir.
+- **İçeri**: Panel → Ayarlar → XML. Tedarikçi adresi, eşleşme (SKU/barkod), fiyat/stok
+  güncelleme, yeni ürünü TASLAK açma, saatlik otomatik. Etiket adları boşsa tahmin edilir
+  (`App\Services\Xml\XmlIceAktarim::ADAYLAR`). "Önizle" hiçbir şeye yazmaz.
+  XML'de eski fiyat yoksa mevcut indirim oranı korunur. Son rapor
+  `storage/app/private/xml/son-aktarim.json`. Komut: `php artisan schafer:xml-ice-aktar [--kuru] [--kaynak=]`.
+- Otomatik çalışma için cron (`schedule:run`) şart — bkz. DEPLOY.md.
+
 ## Bekleyenler (müşteriden)
 
 1. **Ödeme**: PayTR anahtarları (kart; şu an test benzetimi) ve havale için

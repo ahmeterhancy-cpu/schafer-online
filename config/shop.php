@@ -65,6 +65,31 @@ return [
     'cayma_hakki_gun' => 14,
 
     /*
+     * XML.
+     *  - disa: /xml/urunler.xml (Google Merchant / Meta katalog / fiyat
+     *    karsilastirma siteleri ayni bicimi okur).
+     *  - ice: tedarikci XML'inden fiyat/stok guncelleme. Alan adlari bos
+     *    birakilirsa yaygin etiket adlarindan tahmin edilir.
+     */
+    'xml' => [
+        'disa_acik' => (bool) env('SHOP_XML_DISA_ACIK', true),
+        'ice_url' => env('SHOP_XML_ICE_URL', ''),
+        'ice_eslesme' => env('SHOP_XML_ICE_ESLESME', 'sku'), // sku | barkod
+        'ice_fiyat' => (bool) env('SHOP_XML_ICE_FIYAT', true),
+        'ice_stok' => (bool) env('SHOP_XML_ICE_STOK', true),
+        'ice_yeni_urun' => (bool) env('SHOP_XML_ICE_YENI', false),
+        'ice_otomatik' => (bool) env('SHOP_XML_ICE_OTOMATIK', false),
+        'ice_alan_urun' => '',
+        'ice_alan_kod' => '',
+        'ice_alan_barkod' => '',
+        'ice_alan_ad' => '',
+        'ice_alan_fiyat' => '',
+        'ice_alan_eski_fiyat' => '',
+        'ice_alan_stok' => '',
+        'ice_alan_gorsel' => '',
+    ],
+
+    /*
      * Iletisim kanallari. WhatsApp numarasi yerel bicimde yazilabilir
      * (05551800206); App\Support\Iletisim uluslararasi bicime cevirir.
      * Harita gommesi bos birakilirsa adresten uretilir.

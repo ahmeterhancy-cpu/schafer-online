@@ -26,3 +26,14 @@ Schedule::call(fn () => Artisan::call('schafer:rezerv-temizle'))
     ->everyFifteenMinutes()
     ->name('schafer-rezerv-temizle')
     ->withoutOverlapping();
+
+// Tedarikçi XML'i: panelde "otomatik" açık ve adres girilmişse saatte bir
+Schedule::call(function () {
+    if (config('shop.xml.ice_otomatik') && config('shop.xml.ice_url')) {
+        app(\App\Services\Xml\XmlIceAktarim::class)->calistir();
+        \Illuminate\Support\Facades\Cache::forget(\App\Http\Controllers\XmlBeslemeController::ONBELLEK);
+    }
+})
+    ->hourly()
+    ->name('schafer-xml-ice-aktar')
+    ->withoutOverlapping();

@@ -55,6 +55,21 @@ class Setting extends Model
         'havale_sure_gun' => 'shop.odeme.havale_sure_gun',
         'kapida_ek_ucret' => 'shop.odeme.kapida_ek_ucret',
         'kapida_aciklama' => 'shop.odeme.kapida_aciklama',
+        'xml_disa_acik' => 'shop.xml.disa_acik',
+        'xml_ice_url' => 'shop.xml.ice_url',
+        'xml_ice_eslesme' => 'shop.xml.ice_eslesme',
+        'xml_ice_fiyat' => 'shop.xml.ice_fiyat',
+        'xml_ice_stok' => 'shop.xml.ice_stok',
+        'xml_ice_yeni_urun' => 'shop.xml.ice_yeni_urun',
+        'xml_ice_otomatik' => 'shop.xml.ice_otomatik',
+        'xml_ice_alan_urun' => 'shop.xml.ice_alan_urun',
+        'xml_ice_alan_kod' => 'shop.xml.ice_alan_kod',
+        'xml_ice_alan_barkod' => 'shop.xml.ice_alan_barkod',
+        'xml_ice_alan_ad' => 'shop.xml.ice_alan_ad',
+        'xml_ice_alan_fiyat' => 'shop.xml.ice_alan_fiyat',
+        'xml_ice_alan_eski_fiyat' => 'shop.xml.ice_alan_eski_fiyat',
+        'xml_ice_alan_stok' => 'shop.xml.ice_alan_stok',
+        'xml_ice_alan_gorsel' => 'shop.xml.ice_alan_gorsel',
     ];
 
     /** Sayısal olması gereken ayarlar — config'e doğru türde girsin. */
@@ -68,6 +83,11 @@ class Setting extends Model
         'odeme_kapida' => 'bool',
         'havale_sure_gun' => 'int',
         'kapida_ek_ucret' => 'float',
+        'xml_disa_acik' => 'bool',
+        'xml_ice_fiyat' => 'bool',
+        'xml_ice_stok' => 'bool',
+        'xml_ice_yeni_urun' => 'bool',
+        'xml_ice_otomatik' => 'bool',
     ];
 
     /** @return array<string, string|null> */
